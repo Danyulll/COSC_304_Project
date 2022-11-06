@@ -38,6 +38,53 @@ catch (java.lang.ClassNotFoundException e)
 		// Write out product information 
 
 // Close connection
+
+String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";	
+		String uid = "SA";
+		String pw = "YourStrong@Passw0rd";
+			
+		try ( Connection con = DriverManager.getConnection(url, uid, pw);
+	          Statement stmt = con.createStatement();) 
+	    {			
+			PreparedStatement pstmt = con.prepareStatement("SELECT productId, quantity, price FROM orderproduct WHERE orderId=?");
+			//PreparedStatement pstmtDesc = con.prepareStatement("SELECT productDesc FROM product WHERE")
+
+			Statement ordrsmry = con.createStatement();
+			ResultSet rst = ordrsmry.executeQuery("SELECT * FROM ordersummary");
+			System.out.println("Order Summary");
+
+			while (rst.next()){
+				String orderId = rst.getString(1);
+				out.println("<h2>"+orderId+" : "+rst.getString(2)+"</h2>");
+
+				pstmt.setString(1, orderId);
+		ResultSet prodID = pstmt.executeQuery();
+		int count = 0;
+
+		if (prodID.next())
+		{
+			out.println("<h3>Product List</h3><table><th>quantity</th><th>price</th>");
+			do 
+			{	
+				out.println("<tr><td>"+prodID.getString(1)+"</td><td>"+prodID.getString(2)+"</td><td>"
+					+prodID.getString(3)+"</td></tr>");
+			} while (prodID.next());
+			out.println("</table>");
+		}
+		else
+			out.println("<h3>No projects.</h3>");
+		prodID.close();
+			}
+			
+
+
+
+
+		}
+		catch (SQLException ex)
+		{
+			System.err.println("SQLException: " + ex);
+		}	
 %>
 
 </body>
