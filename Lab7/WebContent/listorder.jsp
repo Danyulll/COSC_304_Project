@@ -10,82 +10,36 @@
 
 <h1>Order List</h1>
 
-<%
-//Note: Forces loading of SQL Server driver
-try
-{	// Load driver class
-	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-}
-catch (java.lang.ClassNotFoundException e)
-{
-	out.println("ClassNotFoundException: " +e);
-}
+ <%  
 
-// Useful code for formatting currency values:
-// NumberFormat currFormat = NumberFormat.getCurrencyInstance();
-// out.println(currFormat.format(5.0);  // Prints $5.00
+ // Server connection information
 
-// Make connection
+ String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
+ String uid = "SA";
+ String pw = "YourStrong@Passw0rd";
+ 
+ // Try-catch for connection
+ try(
+ Connection con = DriverManager.getConnection(url, uid, pw);
+ Statement stmt = con.createStatement(); ){
 
-// Write query to retrieve all order summary records
+ // Select orders and their products
 
-// For each order in the ResultSet
+ String SQL = "SELECT ordersummary.orderId, productName, productPrice FROM (ordersummary JOIN orderproduct ON ordersummary.orderId = orderproduct.orderId) JOIN product ON product.productId = orderproduct.productId";
+ ResultSet rst = stmt.executeQuery(SQL);
 
-	// Print out the order summary information
-	// Write a query to retrieve the products in the order
-	//   - Use a PreparedStatement as will repeat this query many times
-	// For each product in the order
-		// Write out product information 
+ // Display items in each order in a table
+ out.println("<table><tr><th>Order Id</th><th>Product Name</th><th>Product Price</th></tr>");
+ while(rst.next()){
+	 out.println("<tr>"+"<td>" +  rst.getString("orderId") + "</td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
+	}
+out.println("</table>");
 
-// Close connection
+// Connection automatically closed
 
-String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";	
-		String uid = "SA";
-		String pw = "YourStrong@Passw0rd";
-			
-		try ( Connection con = DriverManager.getConnection(url, uid, pw);
-	          Statement stmt = con.createStatement();) 
-	    {			
-			PreparedStatement pstmt = con.prepareStatement("SELECT productId, quantity, price FROM orderproduct WHERE orderId=?");
-			//PreparedStatement pstmtDesc = con.prepareStatement("SELECT productDesc FROM product WHERE")
+ } catch(SQLException ex) {out.println(ex);}
+ %>
 
-			Statement ordrsmry = con.createStatement();
-			ResultSet rst = ordrsmry.executeQuery("SELECT * FROM ordersummary");
-			System.out.println("Order Summary");
-
-			while (rst.next()){
-				String orderId = rst.getString(1);
-				out.println("<h2>"+orderId+" : "+rst.getString(2)+"</h2>");
-
-				pstmt.setString(1, orderId);
-		ResultSet prodID = pstmt.executeQuery();
-		int count = 0;
-
-		if (prodID.next())
-		{
-			out.println("<h3>Product List</h3><table><th>quantity</th><th>price</th>");
-			do 
-			{	
-				out.println("<tr><td>"+prodID.getString(1)+"</td><td>"+prodID.getString(2)+"</td><td>"
-					+prodID.getString(3)+"</td></tr>");
-			} while (prodID.next());
-			out.println("</table>");
-		}
-		else
-			out.println("<h3>No projects.</h3>");
-		prodID.close();
-			}
-			
-
-
-
-
-		}
-		catch (SQLException ex)
-		{
-			System.err.println("SQLException: " + ex);
-		}	
-%>
 
 </body>
 </html>
