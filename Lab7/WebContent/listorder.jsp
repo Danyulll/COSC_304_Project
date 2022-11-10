@@ -29,6 +29,7 @@
  ResultSet rst = stmt.executeQuery(SQL);
 
  // Display items in each order in a table
+ out.println("<style>table,th,td { border: 1px solid black;}</style>");
  out.println("<table><tr><th>Order Id</th><th>Product Name</th><th>Product Price</th></tr>");
  while(rst.next()){
 	 out.println("<tr>"+"<td>" +  rst.getString("orderId") + "</td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
