@@ -13,11 +13,26 @@
 <form method="get" action="listprod.jsp">
 <input type="text" name="productName" size="50">
 <input type="submit" value="Submit"><input type="reset" value="Reset"> (Leave blank for all products)
-<h2><p2 style ="font-family:Courier New">All Products</h2></p2>
 </form>
 
-<% // Get product name to search for
-String name = request.getParameter("productName");	
+<%  
+// Get product name to search for
+String prodName = request.getParameter("productName");
+
+// Check that varaible is not null
+	boolean hasProdName = prodName != null && !prodName.equals("");
+
+ String h2 = (hasProdName)? "Products containing " + prodName : "All Products";
+%>
+
+<h2><p2 style ="font-family:Courier New"> <% out.println(h2); %></h2></p2>
+
+<% 
+
+// Set currency format
+NumberFormat currFormat = NumberFormat.getCurrencyInstance();
+
+
 //Note: Forces loading of SQL Server driver
 try
 {	// Load driver class
@@ -31,6 +46,8 @@ String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
  String uid = "SA";
  String pw = "YourStrong@Passw0rd";
  
+
+ if(!hasProdName){
  try(
 Connection con = DriverManager.getConnection(url, uid, pw);
 Statement stmt = con.createStatement(); ){
@@ -44,21 +61,45 @@ out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
 	}
    out.println("</table>");
 
-}
-// Variable name now contains the search string the user entered
-// Use it to build a query and print out the resultset.  Make sure to use PreparedStatement!
+}}else{
 
-// Make the connection
+try(Connection con = DriverManager.getConnection(url, uid, pw);){
+	// Create query
+	String SQL = "SELECT * FROM product WHERE productName LIKE ?";
 
-// Print out the ResultSet
+	PreparedStatement pst=null;
+	ResultSet rst = null;
 
-// For each product create a link of the form
-//addcart.jsp?id=productId&name=productName&price=productPrice
-// Close connection
+	// If varaible is not null run the query
+	if(hasProdName){
+		// Format LIKE
+		prodName = "%"+prodName+"%";
+		
+		// Create prepareStatement and insert formatted varaible
+		pst = con.prepareStatement(SQL); 
+		pst.setString(1, prodName);
 
-// Useful code for formatting currency values:
-// NumberFormat currFormat = NumberFormat.getCurrencyInstance();
-// out.println(currFormat.format(5.0);	// Prints $5.00
+		// Execute the query
+		rst = pst.executeQuery();
+
+		
+
+		out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
+
+		// Traverse results
+		while(rst.next()){
+			out.println("<tr>"+"<td>Add to Cart</td>" + "<td>" + rst.getString("productName")  + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>" );
+		}
+
+	}
+
+	// For each product create a link of the form
+	//addcart.jsp?id=productId&name=productName&price=productPrice
+
+
+} catch (SQLException ex) { out.println(ex); }}
+
+
 %>
 
 </body>
