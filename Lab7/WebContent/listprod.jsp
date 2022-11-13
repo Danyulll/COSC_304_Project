@@ -51,13 +51,12 @@ String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
  try(
 Connection con = DriverManager.getConnection(url, uid, pw);
 Statement stmt = con.createStatement(); ){
-String str = "SELECT productName,productPrice FROM product";
+String str = "SELECT productId,productName,productPrice FROM product";
 ResultSet rst = stmt.executeQuery(str);
 out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
 	
 	while(rst.next()){
-		out.println("<tr>"+"<td>Add to Cart</td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
-	   
+		out.println("<tr>"+"<td><a href=" + "\"" + "addcart.jsp?id="+ rst.getString("productId") + "&name=" + rst.getString("productName") + "&price="+rst.getString("productPrice") + "\"" + ">Add to Cart</a></td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
 	}
    out.println("</table>");
 
@@ -65,7 +64,7 @@ out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
 
 try(Connection con = DriverManager.getConnection(url, uid, pw);){
 	// Create query
-	String SQL = "SELECT * FROM product WHERE productName LIKE ?";
+	String SQL = "SELECT productId,productName,productPrice FROM product WHERE productName LIKE ?";
 
 	PreparedStatement pst=null;
 	ResultSet rst = null;
@@ -89,12 +88,13 @@ try(Connection con = DriverManager.getConnection(url, uid, pw);){
 		// Traverse results
 		while(rst.next()){
 			out.println("<tr>"+"<td>Add to Cart</td>" + "<td>" + rst.getString("productName")  + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>" );
+			
 		}
 
 	}
 
 	// For each product create a link of the form
-	//addcart.jsp?id=productId&name=productName&price=productPrice
+	
 
 
 } catch (SQLException ex) { out.println(ex); }}
