@@ -16,7 +16,7 @@
     <form name="MyForm" method=post action="validateLogin.jsp">
         <table width="40%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-        <td><div align="right">Username:</div></td>
+        <td><div align="right">Customer Id:</div></td>
         <td><input type="text" name="username" size=8 maxlength=8></td>
         </tr>
         <tr>
