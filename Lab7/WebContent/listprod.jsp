@@ -53,6 +53,7 @@ Connection con = DriverManager.getConnection(url, uid, pw);
 Statement stmt = con.createStatement(); ){
 String str = "SELECT productId,productName,productPrice FROM product";
 ResultSet rst = stmt.executeQuery(str);
+out.println("<style>table,th,td { border: 1px solid black;}</style>");
 out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
 	
 	while(rst.next()){
