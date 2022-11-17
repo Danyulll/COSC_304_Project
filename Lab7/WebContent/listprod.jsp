@@ -83,7 +83,7 @@ try(Connection con = DriverManager.getConnection(url, uid, pw);){
 		rst = pst.executeQuery();
 
 		
-
+		out.println("<style>table,th,td { border: 1px solid black;}</style>");
 		out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
 
 		// Traverse results
