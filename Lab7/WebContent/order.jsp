@@ -13,52 +13,67 @@
 <body>
 
 <% 
-// Get customer id
-String custId = request.getParameter("customerId");
-@SuppressWarnings({"unchecked"})
-HashMap<String, ArrayList<Object>> productList = (HashMap<String, ArrayList<Object>>) session.getAttribute("productList");
+	// Get customer id
+	String custId = request.getParameter("customerId");
+	@SuppressWarnings({"unchecked"})
+	HashMap<String, ArrayList<Object>> productList = (HashMap<String, ArrayList<Object>>) session.getAttribute("productList");
 
-// Determine if valid customer id was entered
-// Determine if there are products in the shopping cart
-// If either are not true, display an error message
+	// Make connection
+	try(Connection con = DriverManager.getConnection(url, uid, pw); Statement stmt = con.createStatement(); ){
+		// Determine if valid customer id was entered
+		boolean validId = false;
+		String SQL = "SELECT customerId FROM customer"
+		ResultSet rst = stmt.executeQuery(SQL);
+		while(rst.next()){
+            if (custId.equals(rst.getString("customerId"))){
+				validId = true;
+			} 
+        }
 
-// Make connection
+		// Determine if there are products in the shopping cart
+		boolean validCart = false;
+		SQL = "SELECT "
+		//TODO
+		rst = stmt.executeQuery(SQL);
 
-// Save order information to database
+		// If either are not true, display an error message
+
+		// Save order information to database
 
 
-	/*
-	// Use retrieval of auto-generated keys.
-	PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);			
-	ResultSet keys = pstmt.getGeneratedKeys();
-	keys.next();
-	int orderId = keys.getInt(1);
-	*/
+			/*
+			// Use retrieval of auto-generated keys.
+			PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);			
+			ResultSet keys = pstmt.getGeneratedKeys();
+			keys.next();
+			int orderId = keys.getInt(1);
+			*/
 
-// Insert each item into OrderProduct table using OrderId from previous INSERT
+		// Insert each item into OrderProduct table using OrderId from previous INSERT
 
-// Update total amount for order record
+		// Update total amount for order record
 
-// Here is the code to traverse through a HashMap
-// Each entry in the HashMap is an ArrayList with item 0-id, 1-name, 2-quantity, 3-price
+		// Here is the code to traverse through a HashMap
+		// Each entry in the HashMap is an ArrayList with item 0-id, 1-name, 2-quantity, 3-price
 
-/*
-	Iterator<Map.Entry<String, ArrayList<Object>>> iterator = productList.entrySet().iterator();
-	while (iterator.hasNext())
-	{ 
-		Map.Entry<String, ArrayList<Object>> entry = iterator.next();
-		ArrayList<Object> product = (ArrayList<Object>) entry.getValue();
-		String productId = (String) product.get(0);
-        String price = (String) product.get(2);
-		double pr = Double.parseDouble(price);
-		int qty = ( (Integer)product.get(3)).intValue();
-            ...
-	}
-*/
+		/*
+			Iterator<Map.Entry<String, ArrayList<Object>>> iterator = productList.entrySet().iterator();
+			while (iterator.hasNext())
+			{ 
+				Map.Entry<String, ArrayList<Object>> entry = iterator.next();
+				ArrayList<Object> product = (ArrayList<Object>) entry.getValue();
+				String productId = (String) product.get(0);
+				String price = (String) product.get(2);
+				double pr = Double.parseDouble(price);
+				int qty = ( (Integer)product.get(3)).intValue();
+					...
+			}
+		*/
 
-// Print out order summary
+		// Print out order summary
 
-// Clear cart if order placed successfully
+		// Clear cart if order placed successfully
+	} catch(SQLException ex) {out.println(ex);}
 %>
 </BODY>
 </HTML>
