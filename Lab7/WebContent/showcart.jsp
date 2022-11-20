@@ -23,10 +23,12 @@ if (productList == null)
 else
 {
 	NumberFormat currFormat = NumberFormat.getCurrencyInstance();
-
+	out.println("<style>table,th,td { border: 1px solid black;}</style>");
 	out.println("<h1>Your Shopping Cart</h1>");
 	out.print("<table><tr><th>Product Id</th><th>Product Name</th><th>Quantity</th>");
 	out.println("<th>Price</th><th>Subtotal</th></tr>");
+	
+	
 
 	double total =0;
 	Iterator<Map.Entry<String, ArrayList<Object>>> iterator = productList.entrySet().iterator();

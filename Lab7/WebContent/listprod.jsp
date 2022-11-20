@@ -88,6 +88,7 @@ try(Connection con = DriverManager.getConnection(url, uid, pw);){
 
 		// Traverse results
 		while(rst.next()){
+			
 			out.println("<tr>"+"<td><a href=" + "\"" + "addcart.jsp?id="+ rst.getString("productId") + "&name=" + rst.getString("productName") + "&price="+rst.getString("productPrice") + "\"" + ">Add to Cart</a></td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
 			
 		}
