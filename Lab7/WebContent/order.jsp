@@ -17,29 +17,37 @@
 	String custId = request.getParameter("customerId");
 	@SuppressWarnings({"unchecked"})
 	HashMap<String, ArrayList<Object>> productList = (HashMap<String, ArrayList<Object>>) session.getAttribute("productList");
+	
+	// Server connection information
+	String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
+	String uid = "SA";
+	String pw = "YourStrong@Passw0rd";
 
 	// Make connection
 	try(Connection con = DriverManager.getConnection(url, uid, pw); Statement stmt = con.createStatement(); ){
 		// Determine if valid customer id was entered
 		boolean validId = false;
-		String SQL = "SELECT customerId FROM customer"
+		String SQL = "SELECT customerId FROM customer";
 		ResultSet rst = stmt.executeQuery(SQL);
 		while(rst.next()){
-            if (custId.equals(rst.getString("customerId"))){
+            if (custId.equals(rst.getString("customerId")) == true){
 				validId = true;
 			} 
         }
 
 		// Determine if there are products in the shopping cart
 		boolean validCart = false;
-		SQL = "SELECT "
-		//TODO
-		rst = stmt.executeQuery(SQL);
+		if (productList == null){
+			out.println("<H1>Your shopping cart is empty!</H1>");
+			productList = new HashMap<String, ArrayList<Object>>();
+		}
 
 		// If either are not true, display an error message
+		if(!validId){
+			out.println("Your Customer ID is invalid");
+		} 
 
 		// Save order information to database
-
 
 			/*
 			// Use retrieval of auto-generated keys.
@@ -50,6 +58,7 @@
 			*/
 
 		// Insert each item into OrderProduct table using OrderId from previous INSERT
+		
 
 		// Update total amount for order record
 
@@ -73,6 +82,8 @@
 		// Print out order summary
 
 		// Clear cart if order placed successfully
+
+		//Connection closed automatically
 	} catch(SQLException ex) {out.println(ex);}
 %>
 </BODY>
