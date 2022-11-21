@@ -75,7 +75,33 @@
 		lastName = rst4.getString("lastName");
 
 		//DEBUGGING
-		out.println(orderDate + ", "+shiptoAddress+ ", "+shiptoCity+ ", "+shiptoState+ ", "+shiptoPostalCode+ ", "+shiptoCountry+"\n");
+		//out.println(orderDate + ", "+shiptoAddress+ ", "+shiptoCity+ ", "+shiptoState+ ", "+shiptoPostalCode+ ", "+shiptoCountry+"\n");
+
+		//Get keys
+		String SQL2 = "INSERT INTO ordersummary(orderDate,shiptoAddress,shiptoCity,shiptoState,shiptoPostalCode,shiptoCountry,customerId) VALUES(?,?,?,?,?,?,?)";
+				// Use retrieval of auto-generated keys.
+				PreparedStatement pstmt2 = con.prepareStatement(SQL2, Statement.RETURN_GENERATED_KEYS);
+					
+				pstmt2.setDate(1,new java.sql.Date(orderDate.getTime()));
+				pstmt2.setString(2,shiptoAddress);
+				pstmt2.setString(3,shiptoCity);
+				pstmt2.setString(4,shiptoState);
+				pstmt2.setString(5,shiptoPostalCode);
+				pstmt2.setString(6,shiptoCountry);
+				pstmt2.setInt(7,custId);
+
+				int rowcount = pstmt2.executeUpdate();
+
+				//DEBUGGING
+				//out.println("<br>Inserting new data into ordersummary Row affected?: " + rowcount);
+
+				ResultSet keys = pstmt2.getGeneratedKeys();
+				keys.next();
+				orderId = keys.getInt(1);
+
+				//DEBUGGING
+				//out.println("<br>Did I get a key? " + orderId+"\n");
+
 
 
 		// Save order information to database
@@ -92,30 +118,7 @@
 				double pr = Double.parseDouble(price);
 				int qty = ( (Integer)product.get(3)).intValue();
 		
-				String SQL2 = "INSERT INTO ordersummary(orderDate,shiptoAddress,shiptoCity,shiptoState,shiptoPostalCode,shiptoCountry,customerId) VALUES(?,?,?,?,?,?,?)";
-				// Use retrieval of auto-generated keys.
-				PreparedStatement pstmt2 = con.prepareStatement(SQL2, Statement.RETURN_GENERATED_KEYS);
-					
-				pstmt2.setDate(1,new java.sql.Date(orderDate.getTime()));
-				pstmt2.setString(2,shiptoAddress);
-				pstmt2.setString(3,shiptoCity);
-				pstmt2.setString(4,shiptoState);
-				pstmt2.setString(5,shiptoPostalCode);
-				pstmt2.setString(6,shiptoCountry);
-				pstmt2.setInt(7,custId);
-
-				int rowcount = pstmt2.executeUpdate();
-
-				//DEBUGGING
-				out.println("<br>Inserting new data into ordersummary Row affected?: " + rowcount);
-
-				ResultSet keys = pstmt2.getGeneratedKeys();
-				keys.next();
-				orderId = keys.getInt(1);
-
-				//DEBUGGING
-				out.println("<br>Did I get a key? " + orderId+"\n");
-
+				
 				String SQL3 = "INSERT orderproduct VALUES(?,?,?,?)";
 
 				PreparedStatement pstmt3 = con.prepareStatement(SQL3);        
@@ -127,7 +130,7 @@
                 int rowcount2 = pstmt3.executeUpdate();
 
 				//DEBUGGING
-				out.println("<br>Did I get a rowcount2 when I inserted data into orderproduct? " + rowcount2+"\n");
+				//out.println("<br>Did I get a rowcount2 when I inserted data into orderproduct? " + rowcount2+"\n");
 
 
 			}
@@ -163,7 +166,7 @@
 		int rowcount3 = pstmt3.executeUpdate();
 
 		//DEBUGGING
-		out.println("<br> Did ordersummary get updated with new totalAmount (rowcount3)?: "+rowcount3);
+		//out.println("<br> Did ordersummary get updated with new totalAmount (rowcount3)?: "+rowcount3);
 
 		// Clear cart if order placed successfully
 
@@ -172,7 +175,7 @@
 		session.removeAttribute("authenticatedUser");
 
 		//DEBUGGING
-		out.println("<br> Did the delete work on incart (rowcount4)? " + rowcount4);
+		//out.println("<br> Did the delete work on incart (rowcount4)? " + rowcount4);
 
 		//Connection closed automatically
 	} catch(SQLException ex) {out.println(ex);}
