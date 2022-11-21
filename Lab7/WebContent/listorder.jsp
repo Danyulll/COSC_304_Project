@@ -25,16 +25,42 @@
 
  // Select orders and their products
 
- String SQL = "SELECT ordersummary.orderId, productName, productPrice FROM (ordersummary JOIN orderproduct ON ordersummary.orderId = orderproduct.orderId) JOIN product ON product.productId = orderproduct.productId";
+ String SQL = "SELECT * FROM (customer JOIN ordersummary ON customer.customerId=ordersummary.customerId) JOIN orderproduct ON orderproduct.orderId=ordersummary.orderId";
  ResultSet rst = stmt.executeQuery(SQL);
 
  // Display items in each order in a table
  out.println("<style>table,th,td { border: 1px solid black;}</style>");
- out.println("<table><tr><th>Order Id</th><th>Product Name</th><th>Product Price</th></tr>");
- while(rst.next()){
-	 out.println("<tr>"+"<td>" +  rst.getString("orderId") + "</td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
+ 
+
+int lastOrdId = -1;
+while(rst.next()){
+	if(lastOrdId != rst.getInt("orderId") ){
+		out.println("<table><tr><th>Order Id</th><th>Customer Id</th><th>Customer Name</th><th>Total Amount</th></tr>");
+		out.println("<tr><td>"+rst.getString("orderId")+"</td><td>"+rst.getString("customerId")+"</td><td>"+rst.getString("firstName")+" "+rst.getString("lastName")+"</td><td>$"+rst.getString("totalAmount")+"</td></tr>");
+		Statement stmt2 = con.createStatement();
+		String SQL2 = "SELECT * FROM  orderproduct WHERE orderId= ?";
+		PreparedStatement pstmt = con.prepareStatement(SQL2);
+		pstmt.setInt(1,rst.getInt("orderId"));
+		ResultSet rst2 = pstmt.executeQuery();
+		out.println("<tr><th colspan=\"2\">Product Id</th><th>Quantity</th><th>Price</th></tr>");
+		while(rst2.next()){
+			out.println("<tr><td colspan=\"2\">"+rst2.getString("productId")+"</td><td>"+rst2.getString("quantity")+"</td>"+"<td>$"+rst2.getBigDecimal("price")+"</td></tr>");
+		}
+		out.println("</table>");
+		
+		lastOrdId = rst.getInt("orderId");
+		
 	}
-out.println("</table>");
+
+}
+
+
+
+
+
+
+
+
 
 // Connection automatically closed
 

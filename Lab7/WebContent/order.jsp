@@ -14,8 +14,14 @@
 <body>
 
 <% 
-	// Get customer id
-	String custId = (String)session.getAttribute("authenticatedUser");
+	// Set scope for orderId,firstName,lastName
+	int orderId = -1;
+	String firstName="";
+	String lastName="";
+
+
+	// Get customer username
+	String username = (String)session.getAttribute("authenticatedUser");
 	@SuppressWarnings({"unchecked"})
 	HashMap<String, ArrayList<Object>> productList = (HashMap<String, ArrayList<Object>>) session.getAttribute("productList");
 	
@@ -29,10 +35,10 @@
 		
 		// Determine if valid customer id was entered
 		boolean validId = false;
-		String SQL = "SELECT customerId FROM customer";
+		String SQL = "SELECT userid FROM customer";
 		ResultSet rst = stmt.executeQuery(SQL);
 		while(rst.next()){
-            if (custId.equals(rst.getString("customerId")) == true){
+            if (username.equals(rst.getString("userid")) == true){
 				validId = true;
 			} 
         }
@@ -51,9 +57,9 @@
 
 
 		// Get Customer information
-		String SQL4 = "SELECT * from customer where customerId = ?";
+		String SQL4 = "SELECT * from customer where userid = ?";
 		PreparedStatement pstmt = con.prepareStatement(SQL4);
-		pstmt.setString(1,custId);
+		pstmt.setString(1,username);
 		ResultSet rst4 = pstmt.executeQuery();
 		rst4.next();
 
@@ -63,6 +69,10 @@
 		String shiptoState = rst4.getString("state");
 		String shiptoPostalCode = rst4.getString("postalCode");
 		String shiptoCountry = rst4.getString("country");
+		int custId = rst4.getInt("customerId");
+
+		firstName = rst4.getString("firstName");
+		lastName = rst4.getString("lastName");
 
 		//DEBUGGING
 		out.println(orderDate + ", "+shiptoAddress+ ", "+shiptoCity+ ", "+shiptoState+ ", "+shiptoPostalCode+ ", "+shiptoCountry+"\n");
@@ -92,19 +102,19 @@
 				pstmt2.setString(4,shiptoState);
 				pstmt2.setString(5,shiptoPostalCode);
 				pstmt2.setString(6,shiptoCountry);
-				pstmt2.setString(7,custId);
+				pstmt2.setInt(7,custId);
 
 				int rowcount = pstmt2.executeUpdate();
 
 				//DEBUGGING
-				out.println("Row affected?: " + rowcount+"\n");
+				out.println("<br>Inserting new data into ordersummary Row affected?: " + rowcount);
 
 				ResultSet keys = pstmt2.getGeneratedKeys();
 				keys.next();
-				int orderId = keys.getInt(1);
+				orderId = keys.getInt(1);
 
 				//DEBUGGING
-				out.println("Did I get a key? " + orderId+"\n");
+				out.println("<br>Did I get a key? " + orderId+"\n");
 
 				String SQL3 = "INSERT orderproduct VALUES(?,?,?,?)";
 
@@ -117,7 +127,7 @@
                 int rowcount2 = pstmt3.executeUpdate();
 
 				//DEBUGGING
-				out.println("Did I get a rowcount2? " + rowcount2+"\n");
+				out.println("<br>Did I get a rowcount2 when I inserted data into orderproduct? " + rowcount2+"\n");
 
 
 			}
@@ -146,13 +156,14 @@
 		out.println("</table>");
 
 		//Update ordersummary with new total amount
-		String UPDATE = "UPDATE ordersummary SET totalAmount = ?";
+		String UPDATE = "UPDATE ordersummary SET totalAmount = ? WHERE orderId =?";
 		PreparedStatement pstmt3 = con.prepareStatement(UPDATE); 
 		pstmt3.setDouble(1,total);
+		pstmt3.setDouble(2,orderId);
 		int rowcount3 = pstmt3.executeUpdate();
 
 		//DEBUGGING
-		out.println("Did ordersummary get updated (rowcount3)?: "+rowcount3+"\n");
+		out.println("<br> Did ordersummary get updated with new totalAmount (rowcount3)?: "+rowcount3);
 
 		// Clear cart if order placed successfully
 
@@ -161,11 +172,13 @@
 		session.removeAttribute("authenticatedUser");
 
 		//DEBUGGING
-		out.println("Did the delete work (rowcount4)? " + rowcount4);
+		out.println("<br> Did the delete work on incart (rowcount4)? " + rowcount4);
 
 		//Connection closed automatically
 	} catch(SQLException ex) {out.println(ex);}
 %>
+<h1>Shiping To: <%= firstName %> <%= lastName %></h1>
+<h1>Order Id: <%= orderId %></h1>
 </BODY>
 </HTML>
 

@@ -30,13 +30,13 @@ String validateLogin(JspWriter out, HttpServletRequest request, HttpSession sess
     try(
     Connection con = DriverManager.getConnection(url, uid, pw);
     Statement stmt = con.createStatement(); ){
-        // Select customerId and their passwords
-        String SQL = "SELECT customerId, password FROM customer";
+        // Select userid and their passwords
+        String SQL = "SELECT userid, password FROM customer";
         ResultSet rst = stmt.executeQuery(SQL);
 
         //Check if login information is valid
         while(rst.next()){
-            if (username.equals(rst.getString("customerId")) && password.equals(rst.getString("password"))) retStr = username;
+            if (username.equals(rst.getString("userid")) && password.equals(rst.getString("password"))) retStr = username;
         }
 
         //Return Result
