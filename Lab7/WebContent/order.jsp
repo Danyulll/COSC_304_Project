@@ -8,13 +8,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>YOUR NAME Grocery Order Processing</title>
+<title>Hydrobottle Grocery Order Processing</title>
 </head>
+<h1>Your Order Summary</h1>
 <body>
 
 <% 
 	// Get customer id
-	String custId = request.getParameter("customerId");
+	String custId = (String)session.getAttribute("authenticatedUser");
 	@SuppressWarnings({"unchecked"})
 	HashMap<String, ArrayList<Object>> productList = (HashMap<String, ArrayList<Object>>) session.getAttribute("productList");
 	
@@ -24,7 +25,8 @@
 	String pw = "YourStrong@Passw0rd";
 
 	// Make connection
-	try(Connection con = DriverManager.getConnection(url, uid, pw); Statement stmt = con.createStatement(); ){
+	try(Connection con = DriverManager.getConnection(url, uid, pw); Statement stmt = con.createStatement();){
+		
 		// Determine if valid customer id was entered
 		boolean validId = false;
 		String SQL = "SELECT customerId FROM customer";
@@ -47,41 +49,119 @@
 			out.println("Your Customer ID is invalid");
 		} 
 
+
+		// Get Customer information
+		String SQL4 = "SELECT * from customer where customerId = ?";
+		PreparedStatement pstmt = con.prepareStatement(SQL4);
+		pstmt.setString(1,custId);
+		ResultSet rst4 = pstmt.executeQuery();
+		rst4.next();
+
+		java.util.Date orderDate = new java.util.Date();
+		String shiptoAddress = rst4.getString("address");
+		String shiptoCity = rst4.getString("city");
+		String shiptoState = rst4.getString("state");
+		String shiptoPostalCode = rst4.getString("postalCode");
+		String shiptoCountry = rst4.getString("country");
+
+		//DEBUGGING
+		out.println(orderDate + ", "+shiptoAddress+ ", "+shiptoCity+ ", "+shiptoState+ ", "+shiptoPostalCode+ ", "+shiptoCountry+"\n");
+
+
 		// Save order information to database
 
-			/*
-			// Use retrieval of auto-generated keys.
-			PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);			
-			ResultSet keys = pstmt.getGeneratedKeys();
-			keys.next();
-			int orderId = keys.getInt(1);
-			*/
-
-		// Insert each item into OrderProduct table using OrderId from previous INSERT
+		Iterator<Map.Entry<String, ArrayList<Object>>> iterator = productList.entrySet().iterator();
 		
-
-		// Update total amount for order record
-
-		// Here is the code to traverse through a HashMap
-		// Each entry in the HashMap is an ArrayList with item 0-id, 1-name, 2-quantity, 3-price
-
-		/*
-			Iterator<Map.Entry<String, ArrayList<Object>>> iterator = productList.entrySet().iterator();
 			while (iterator.hasNext())
 			{ 
 				Map.Entry<String, ArrayList<Object>> entry = iterator.next();
 				ArrayList<Object> product = (ArrayList<Object>) entry.getValue();
 				String productId = (String) product.get(0);
+				String productName = (String) product.get(1);
 				String price = (String) product.get(2);
 				double pr = Double.parseDouble(price);
 				int qty = ( (Integer)product.get(3)).intValue();
-					...
-			}
-		*/
+		
+				String SQL2 = "INSERT INTO ordersummary(orderDate,shiptoAddress,shiptoCity,shiptoState,shiptoPostalCode,shiptoCountry,customerId) VALUES(?,?,?,?,?,?,?)";
+				// Use retrieval of auto-generated keys.
+				PreparedStatement pstmt2 = con.prepareStatement(SQL2, Statement.RETURN_GENERATED_KEYS);
+					
+				pstmt2.setDate(1,new java.sql.Date(orderDate.getTime()));
+				pstmt2.setString(2,shiptoAddress);
+				pstmt2.setString(3,shiptoCity);
+				pstmt2.setString(4,shiptoState);
+				pstmt2.setString(5,shiptoPostalCode);
+				pstmt2.setString(6,shiptoCountry);
+				pstmt2.setString(7,custId);
 
+				int rowcount = pstmt2.executeUpdate();
+
+				//DEBUGGING
+				out.println("Row affected?: " + rowcount+"\n");
+
+				ResultSet keys = pstmt2.getGeneratedKeys();
+				keys.next();
+				int orderId = keys.getInt(1);
+
+				//DEBUGGING
+				out.println("Did I get a key? " + orderId+"\n");
+
+				String SQL3 = "INSERT orderproduct VALUES(?,?,?,?)";
+
+				PreparedStatement pstmt3 = con.prepareStatement(SQL3);        
+        
+                pstmt3.setInt(1,orderId);
+                pstmt3.setString(2,productId);
+                pstmt3.setInt(3,qty);
+                pstmt3.setDouble(4,pr);
+                int rowcount2 = pstmt3.executeUpdate();
+
+				//DEBUGGING
+				out.println("Did I get a rowcount2? " + rowcount2+"\n");
+
+
+			}
+		
 		// Print out order summary
 
+		out.println("<style>table,th,td { border: 1px solid black;}</style>");
+        out.println("<table><tr><th>Product Id</th><th>Product Name</th><th>Quantity</th><th>Price</th><th>Subtotal</th></tr>");
+        Iterator<Map.Entry<String, ArrayList<Object>>> iterator2 = productList.entrySet().iterator();
+        double total = 0;
+
+		while (iterator2.hasNext())
+		{ 
+			Map.Entry<String, ArrayList<Object>> entry = iterator2.next();
+			ArrayList<Object> product = (ArrayList<Object>) entry.getValue();
+			String productId = (String) product.get(0);
+			String productName = (String) product.get(1);
+			String price = (String) product.get(2);
+			double pr = Double.parseDouble(price);
+			int qty = ( (Integer)product.get(3)).intValue();
+			double subtotal = pr * qty;
+			out.println("<tr>"+"<td>" +  productId + "</td>" + "<td>" + productName + "</td>" + "<td>" + qty + "</td>"+"<td> $" + pr + "</td>"+"<td> $" + subtotal + "</td>"+"</tr>");
+			total += subtotal;
+		}
+		out.println("<tr><td colspan=\"3\"></td><td>Order Total</td><td>$"+ total+"</td></tr>");
+		out.println("</table>");
+
+		//Update ordersummary with new total amount
+		String UPDATE = "UPDATE ordersummary SET totalAmount = ?";
+		PreparedStatement pstmt3 = con.prepareStatement(UPDATE); 
+		pstmt3.setDouble(1,total);
+		int rowcount3 = pstmt3.executeUpdate();
+
+		//DEBUGGING
+		out.println("Did ordersummary get updated (rowcount3)?: "+rowcount3+"\n");
+
 		// Clear cart if order placed successfully
+
+		int rowcount4 = stmt.executeUpdate("DELETE FROM incart");
+		session.removeAttribute("productList");
+		session.removeAttribute("authenticatedUser");
+
+		//DEBUGGING
+		out.println("Did the delete work (rowcount4)? " + rowcount4);
 
 		//Connection closed automatically
 	} catch(SQLException ex) {out.println(ex);}
