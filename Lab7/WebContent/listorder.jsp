@@ -14,7 +14,7 @@
 
  // Server connection information
 
- String url = "jdbc:sqlserver://db:1433;DatabaseName=orders;";
+ String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
  String uid = "SA";
  String pw = "YourStrong@Passw0rd";
  
@@ -65,6 +65,18 @@ while(rst.next()){
 // Connection automatically closed
 
  } catch(SQLException ex) {out.println(ex);}
+ 
+ 
+ try(
+	Connection con = DriverManager.getConnection(url, uid, pw);
+	Statement stmt = con.createStatement(); ){
+
+	ResultSet rst = stmt.executeQuery("Select * FROM product where productId=1");
+	rst.next();
+	out.println(rst.getString("productImageURL"));
+
+	}
+ 
  %>
 
 

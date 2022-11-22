@@ -42,7 +42,7 @@ catch (java.lang.ClassNotFoundException e)
 {
 	out.println("ClassNotFoundException: " +e);
 }
-String url = "jdbc:sqlserver://db:1433;DatabaseName=orders;";
+String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
  String uid = "SA";
  String pw = "YourStrong@Passw0rd";
  

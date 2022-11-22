@@ -13,7 +13,7 @@ Public methods:
 
 <%!
 	// User id, password, and server information
-	private String url = "jdbc:sqlserver://db:1433;DatabaseName=orders;";
+	private String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
 	private String uid = "SA";
 	private String pw = "YourStrong@Passw0rd";
 
