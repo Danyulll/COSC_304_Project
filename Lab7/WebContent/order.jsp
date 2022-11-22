@@ -26,7 +26,7 @@
 	HashMap<String, ArrayList<Object>> productList = (HashMap<String, ArrayList<Object>>) session.getAttribute("productList");
 	
 	// Server connection information
-	String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
+	String url = "jdbc:sqlserver://db:1433;DatabaseName=orders;";
 	String uid = "SA";
 	String pw = "YourStrong@Passw0rd";
 

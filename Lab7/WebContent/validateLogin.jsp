@@ -22,7 +22,7 @@ String validateLogin(JspWriter out, HttpServletRequest request, HttpSession sess
     if((username.length() == 0) || (password.length() == 0)) return null;
 
     // Server connection information
-    String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
+    String url = "jdbc:sqlserver://db:1433;DatabaseName=orders;";
     String uid = "SA";
     String pw = "YourStrong@Passw0rd";
     
