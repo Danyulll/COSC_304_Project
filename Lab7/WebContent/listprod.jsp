@@ -57,7 +57,9 @@ out.println("<style>table,th,td { border: 1px solid black;}</style>");
 out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
 	
 	while(rst.next()){
-		out.println("<tr>"+"<td><a href=" + "\"" + "addcart.jsp?id="+ rst.getString("productId") + "&name=" + rst.getString("productName") + "&price="+rst.getString("productPrice") + "\"" + ">Add to Cart</a></td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
+		out.println("<tr>"+"<td><a href=" + "\"" + "addcart.jsp?id="+ rst.getString("productId") + "&name=" + rst.getString("productName") + "&price="+rst.getString("productPrice") + "\"" + ">Add to Cart</a></td>" + "<td>" + "<a href=\"productInfo.jsp?id=" + rst.getString("productId") +"\">" + rst.getString("productName") + "</a>" + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
+	
+	
 	}
    out.println("</table>");
 
