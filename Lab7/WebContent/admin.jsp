@@ -10,20 +10,24 @@
 <h2> Administrator Sales Report by Day</h2>
 
 <%
-try 
+String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
+String uid = "SA";
+String pw = "YourStrong@Passw0rd";
+try (Connection con = DriverManager.getConnection(url, uid, pw);
+Statement stmt = con.createStatement(); )
 	{
-		getConnection();
-		String SQL = "SELECT shipmentDate, shipmentId FROM shipment";
-        Statement stmt = con.createStatement();
+		//getConnection();
+		String SQL = "SELECT shipmentDate, SUM(totalAmount) AS total FROM ((shipment JOIN productinventory ON shipment.warehouseId = productinventory.warehouseId) JOIN orderproduct ON productinventory.productId = orderproduct.productId) JOIN ordersummary ON orderproduct.orderId = ordersummary.orderId  GROUP BY shipmentDate";
+        //Statement stmt = con.createStatement();
         ResultSet rst = stmt.executeQuery(SQL);
 
-        out.println(rst.next());
+        //out.println(rst.next());
 
         // Display items in each order in a table
         out.println("<style>table,th,td { border: 1px solid black;}</style>");
         out.println("<table><tr><th>Order Date</th><th>Total Order Amount</th></tr>");
         while(rst.next()){
-            out.println("<tr><td>" + rst.getDate("shipmentDate") + "</td><td>" + rst.getInt("shipmentId") + "</td></tr>");
+            out.println("<tr><td>" + rst.getDate("shipmentDate") + "</td><td>" + rst.getBigDecimal("total") + "</td></tr>");
         }   
         out.println("</table>");
 
