@@ -7,21 +7,21 @@
 <title>Customer Information</title>
 </head>
 <body>
-    <%@ include file="auth.jsp"%>
+    <%@ include file="auth.jsp"%> <!--remove this line to test customer search function if you dont know username/password-->
     <%@ page import="java.text.NumberFormat" %>
     <%@ include file="jdbc.jsp" %>
 <h1><p1 style ="font-family:Courier New">Search for customer by ID:</h1></p1>
 
 <form method="get" action="customer.jsp">
 <input type="text" name="customerId" size="50">
-<input type="submit" value="Submit"><input type="reset" value="Reset"> (Leave blank for all customers)
+<input type="submit" value="Submit"><input type="reset" value="Reset"> (Leave blank for all customers) <!--search for customers by their id; 1, 2, 3,... etc-->
 </form>
 
 <%  
-// Get customer Id to search for
+
 String id = request.getParameter("customerId");
 
-// Check that variable is not null
+
 	boolean hasId = id != null && !id.equals("");
 
  String h2 = (hasId)? "Customer ID: " + id : "All Customers";
@@ -31,13 +31,13 @@ String id = request.getParameter("customerId");
 
 <% 
 
-// Set currency format
+
 NumberFormat currFormat = NumberFormat.getCurrencyInstance();
 
 
-//Note: Forces loading of SQL Server driver
+
 try
-{	// Load driver class
+{	
 	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 }
 catch (java.lang.ClassNotFoundException e)
@@ -66,20 +66,20 @@ out.println("<table><tr><th>Id</th><th>First Name</th><th>Last Name</th></tr>");
 }}else{
 
 try(Connection con = DriverManager.getConnection(url, uid, pw);){
-	// Create query
+	
 	String SQL = "SELECT customerId,firstName,lastName,email,phonenum,address,city,state,postalCode,country,userid FROM customer WHERE customerId = ?";
 
 	PreparedStatement pst = null;
 	ResultSet rst = null;
 
-	// If variable is not null run the query
+	
 	if(hasId){
 		
-		// Create prepareStatement and insert formatted variable
+		
 		pst = con.prepareStatement(SQL); 
 		pst.setString(1, id);
 
-		// Execute the query
+		
 		rst = pst.executeQuery();
 
 		out.println("<style>table,th,td { border: 1px solid black;}</style>");
