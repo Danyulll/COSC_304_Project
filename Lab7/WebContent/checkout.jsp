@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+z<!DOCTYPE html>
 <html>
 <head>
-<title>Ray's Grocery CheckOut Line</title>
+<title>Hydrobottle CheckOut Line</title>
 </head>
 <body>
     <center>
