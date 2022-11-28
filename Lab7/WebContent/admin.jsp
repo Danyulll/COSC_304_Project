@@ -16,12 +16,8 @@ String pw = "YourStrong@Passw0rd";
 try (Connection con = DriverManager.getConnection(url, uid, pw);
 Statement stmt = con.createStatement(); )
 	{
-		//getConnection();
 		String SQL = "SELECT shipmentDate, SUM(totalAmount) AS total FROM ((shipment JOIN productinventory ON shipment.warehouseId = productinventory.warehouseId) JOIN orderproduct ON productinventory.productId = orderproduct.productId) JOIN ordersummary ON orderproduct.orderId = ordersummary.orderId  GROUP BY shipmentDate";
-        //Statement stmt = con.createStatement();
         ResultSet rst = stmt.executeQuery(SQL);
-
-        //out.println(rst.next());
 
         // Display items in each order in a table
         out.println("<style>table,th,td { border: 1px solid black;}</style>");
