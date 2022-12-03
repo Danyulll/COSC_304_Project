@@ -18,6 +18,8 @@
 
 <h2 align="center"><a href="logout.jsp">Log out</a></h2>
 
+<h2 align="center"><a href="createAccount.jsp">Create account</a></h2>
+
 <H1 align="center">
 <%
 String username = (String)session.getAttribute("authenticatedUser");
