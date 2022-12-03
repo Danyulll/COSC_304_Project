@@ -106,4 +106,5 @@
     }
         
     %>
+    <h3 align="left"><a href="index.jsp">Back to Index</a></h3>
 </body>
