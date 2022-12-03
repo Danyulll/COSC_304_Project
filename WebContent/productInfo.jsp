@@ -38,10 +38,34 @@
     out.print("<br><a href=\"listprod.jsp\">Continue Shopping</a>");
 	}catch(SQLException ex) {out.println(ex);}
     
+
+    String username = (String)session.getAttribute("authenticatedUser");
+if(username==null){
+    out.println("<br><a href=\"login.jsp\">Log in to leave a review</a>");
+}else{
+    try(
+	Connection con = DriverManager.getConnection(url, uid, pw); ){
+    String pid = id;
+
+    String SQL3 = "SELECT customerId FROM customer WHERE userid=?";
+    PreparedStatement pst3 = con.prepareStatement(SQL3);
+    pst3.setString(1,username);
+    ResultSet rst3 = pst3.executeQuery();
+    rst3.next();
+    String cid = rst3.getString(1);
+
+    session = request.getSession(true);// May create new session
+    session.setAttribute("productId",pid);
+    session.setAttribute("customerId",cid);
+
+    out.println("<br>Leave a review<br><form action=\"review.jsp\"><input type=\"text\" name=\"comment\"><br><input type=\"submit\" value=\"submit\"><select name=\"rating\"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></form>");
+    }catch(SQLException ex) {out.println(ex);}
+}
     %>
     
-    <h2>Reviews</h2>
+    
 <%
+out.println("<h2>Reviews</h2>");
 try(Connection con = DriverManager.getConnection(url, uid, pw);){
 	// Create query
 	String SQL2 = "SELECT * FROM review  WHERE productId = ?";
@@ -65,11 +89,5 @@ try(Connection con = DriverManager.getConnection(url, uid, pw);){
 
 } catch (SQLException ex) { out.println(ex); }
 %>
-    
-<!-- reviewId            INT IDENTITY,
-reviewRating        INT,
-reviewDate          DATETIME,   
-customerId          INT,
-productId           INT,
-reviewComment       VARCHAR(1000),  -->
+
 </html>

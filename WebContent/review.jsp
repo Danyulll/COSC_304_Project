@@ -36,7 +36,7 @@ Connection con = DriverManager.getConnection(url, uid, pw); ){
     int rowcount = pst.executeUpdate();
     out.println("<h2>Thank you for your feedback</h2>");
 }else{
-        out.println("<h2>You've already reviewed this product</h2>");
+        out.println("<h2>You've already reviewed this product or haven't bought it before</h2>");
     }
     
 
