@@ -44,8 +44,25 @@
 	if(valid){
 		out.println("Order id validated<br>");
 	}else{
+		//TODO everything will still run even if the orderId is invalid
 		out.println("Error: order id invalid<br>");
 	}
+
+	java.util.Date shipmentDate = new java.util.Date();
+	if(valid){
+	//Get order date
+	try(Connection con = DriverManager.getConnection(url, uid, pw);Statement stmt = con.createStatement();){
+		String gettingDate = "SELECT orderDate FROM orderSummary WHERE orderId=?";
+		PreparedStatement pstGetDate = con.prepareStatement(gettingDate);
+		pstGetDate.setString(1,id);
+		ResultSet rstGetDate = pstGetDate.executeQuery();
+		rstGetDate.next();
+		shipmentDate = rstGetDate.getDate("orderDate");
+
+	}catch (SQLException ex) {
+		out.println(ex);
+	}
+}
 	
 	try(Connection con = DriverManager.getConnection(url, uid, pw);Statement stmt = con.createStatement();){
 		
@@ -59,12 +76,17 @@
 		pst.setString(1,id);
 		ResultSet rst2 = pst.executeQuery();
 
-		// Create a new shipment record (For now only for warehouse 1)
-		int rowcount = stmt.executeUpdate("INSERT INTO shipment(warehouseId) VALUES (1)");
+		// Create a new shipment record (For now only for warehouse 1) using a dummy date for now
+		//int rowcount = stmt.executeUpdate("INSERT INTO shipment(warehouseId,shipmentDate,orderId) VALUES (1,'2019-9-5 3:30:22',?)");
+		String SQLship = "INSERT INTO shipment(warehouseId,shipmentDate,orderId) VALUES (1,?,?)";
+		PreparedStatement pstShip = con.prepareStatement(SQLship);
+		pstShip.setDate(1,new java.sql.Date(shipmentDate.getTime()));
+		pstShip.setString(2,id);
+		pstShip.executeUpdate(); 
 		
 
 		//DEBUGGING
-		out.println("<br>Did new shipment record creation work: " + rowcount);
+		//out.println("<br>Did new shipment record creation work: " + rowcount);
 	
 
 		// For each item verify sufficient quantity available in warehouse 1

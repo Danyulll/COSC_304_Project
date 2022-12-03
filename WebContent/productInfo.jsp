@@ -28,7 +28,7 @@
     }
 
     if(rst.getBlob("productImage") != null){
-       
+       out.println("<img src=\"displayImage.jsp?id=" + id+"\">");
     }
 
     out.println("<br><strong>Id: </strong>"+rst.getString("productId"));
@@ -42,6 +42,6 @@
     
     %>
     
-    <img src="displayImage.jsp?id=1">
+    
 
 </html>

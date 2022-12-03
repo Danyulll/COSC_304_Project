@@ -105,9 +105,12 @@ CREATE TABLE shipment (
     shipmentId          INT IDENTITY,
     shipmentDate        DATETIME,   
     shipmentDesc        VARCHAR(100),   
-    warehouseId         INT, 
+    warehouseId         INT,
+    orderId             INT,
     PRIMARY KEY (shipmentId),
     FOREIGN KEY (warehouseId) REFERENCES warehouse(warehouseId)
+        ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY (orderId) REFERENCES ordersummary(orderId)
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
