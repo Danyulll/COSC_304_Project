@@ -167,6 +167,33 @@ String pw = "YourStrong@Passw0rd";
 
 
 %>
+<h2>Reviews</h2>
+<%
+try(Connection con = DriverManager.getConnection(url, uid, pw);){
+	// Create query
+	String SQL = "SELECT * FROM review  WHERE productId = ?";
 
+	PreparedStatement pst=null;
+	ResultSet rst = null;
+
+	// Create prepareStatement and insert formatted varaible
+	pst = con.prepareStatement(SQL); 
+	pst.setString(1,catName);
+
+	// Execute the query
+	rst = pst.executeQuery();
+
+
+	out.println("<style>table,th,td { border: 1px solid black;}</style>");
+	out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
+
+	// Traverse results
+	while(rst.next()){
+	
+	out.println("<tr>"+"<td><a href=" + "\"" + "addcart.jsp?id="+ rst.getString("productId") + "&name=" + rst.getString("productName") + "&price="+rst.getString("productPrice") + "\"" + ">Add to Cart</a></td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
+	}
+
+} catch (SQLException ex) { out.println(ex); }
+%>
 </body>
 </html>

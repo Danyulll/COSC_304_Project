@@ -38,10 +38,38 @@
     out.print("<br><a href=\"listprod.jsp\">Continue Shopping</a>");
 	}catch(SQLException ex) {out.println(ex);}
     
-    
-    
     %>
     
-    
+    <h2>Reviews</h2>
+<%
+try(Connection con = DriverManager.getConnection(url, uid, pw);){
+	// Create query
+	String SQL2 = "SELECT * FROM review  WHERE productId = ?";
 
+	PreparedStatement pst2 = con.prepareStatement(SQL2);
+	pst2.setString(1,id);
+
+
+	// Execute the query
+	ResultSet rst2 = pst2.executeQuery();
+
+
+	out.println("<style>table,th,td { border: 1px solid black;}</style>");
+	out.println("<table><tr><th>Review Date</th><th>Review Rating</th><th>Review</th>");
+
+	// Traverse results
+	while(rst2.next()){
+	
+	out.println("<tr><td>"+ rst2.getString("reviewDate")+"</td><td>" + rst2.getInt("reviewRating") + "</td><td>" + rst2.getString("reviewComment") + "</td></tr>");
+	}
+
+} catch (SQLException ex) { out.println(ex); }
+%>
+    
+<!-- reviewId            INT IDENTITY,
+reviewRating        INT,
+reviewDate          DATETIME,   
+customerId          INT,
+productId           INT,
+reviewComment       VARCHAR(1000),  -->
 </html>

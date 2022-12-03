@@ -37,7 +37,8 @@ INSERT INTO ordersummary (customerId, orderDate, totalAmount) VALUES (1, '2019-1
          Statement stmt = con.createStatement(); ){
          
              
-          
+            int rowcount99 = stmt.executeUpdate("INSERT INTO review VALUES (5,'2019-10-17 05:45:11',1,1,'Its like sort of ok')");
+            out.println("<br>Did review insert work " + rowcount99);
  
  
              int rowcount0 = stmt.executeUpdate("INSERT INTO warehouse(warehouseName) VALUES ('warehouse1')");
