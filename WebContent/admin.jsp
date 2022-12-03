@@ -37,6 +37,6 @@ Statement stmt = con.createStatement(); )
 		closeConnection();
 	}
 %>
-
+<h2 align="center"><a href="customer.jsp">Show All Customers</a></h2>
 </body>
 </html>
