@@ -14,18 +14,48 @@ String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
 String uid = "SA";
 String pw = "YourStrong@Passw0rd";
 
+//DEBUGGING
+//out.println("<br> You're ID: " + customerId + "<br> Your comment"+"<br> The product id: " + productId + "<br> Your rating: " + rating);
+
 try(
 Connection con = DriverManager.getConnection(url, uid, pw); ){
     
 
-    String SQL2 = "SELECT * FROM REVIEW WHERE customerId = ?";
+    String SQL2 = "SELECT * FROM REVIEW WHERE customerId = ? AND productId = ?";
     PreparedStatement pst2 = con.prepareStatement(SQL2);
     pst2.setString(1,customerId);
+    pst2.setString(2,productId);
     ResultSet rst2 = pst2.executeQuery();
-    boolean madeReviewBefore  = (!rst2.next())? false:true;
+    boolean madeReviewBefore = false;
+   if(rst2.next()==false){
+    //DEBUGGING
+    //out.println("no reviews by you");
+    }else{
+       madeReviewBefore = true;
+       //DEBUGGING
+       //out.println("You have reviewed this before");
+    }
+    
+    boolean boughtBefore = false;
+    String SQL4 = "SELECT * FROM (customer JOIN ordersummary ON customer.customerId = ordersummary.customerId) JOIN orderproduct ON orderproduct.orderId =  ordersummary.orderId WHERE customer.customerId = ?";
+    PreparedStatement pst4 = con.prepareStatement(SQL4);
+    pst4.setString(1,customerId);
+    ResultSet rst4 = pst4.executeQuery();
+
+    while(rst4.next()){
+        if(productId.equals(rst4.getString("productId"))){
+            boughtBefore = true;
+            //DEBUGGING
+            //out.println("You have bought this product before");
+            break;
+        }else{
+            //DEBUGGING
+            //out.println("You have not bought this product before");
+        }
+    }
     
     
-    if(!madeReviewBefore){
+    if(!madeReviewBefore && boughtBefore){
     String SQL = "INSERT INTO review VALUES (?,?,?,?,?)";
     PreparedStatement pst = con.prepareStatement(SQL);
     pst.setString(1,rating);
@@ -36,7 +66,13 @@ Connection con = DriverManager.getConnection(url, uid, pw); ){
     int rowcount = pst.executeUpdate();
     out.println("<h2>Thank you for your feedback</h2>");
 }else{
-        out.println("<h2>You've already reviewed this product or haven't bought it before</h2>");
+        if(!boughtBefore){
+            out.println("<h2>You have not bought this product before</h2>");
+        }
+
+        if(madeReviewBefore){
+            out.println("<h2>You have reviewed this before</h2>");
+        }
     }
     
 
@@ -44,17 +80,3 @@ Connection con = DriverManager.getConnection(url, uid, pw); ){
 %>
 </body>
 </html>
-
-<!-- CREATE TABLE review (
-    reviewId            INT IDENTITY,
-    reviewRating        INT,
-    reviewDate          DATETIME,   
-    customerId          INT,
-    productId           INT,
-    reviewComment       VARCHAR(1000),          
-    PRIMARY KEY (reviewId),
-    FOREIGN KEY (customerId) REFERENCES customer(customerId)
-        ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (productId) REFERENCES product(productId)
-        ON UPDATE CASCADE ON DELETE CASCADE
-); -->

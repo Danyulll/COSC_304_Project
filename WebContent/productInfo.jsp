@@ -54,7 +54,7 @@ if(username==null){
     rst3.next();
     String cid = rst3.getString(1);
 
-    session = request.getSession(true);// May create new session
+    //session = request.getSession(true);// May create new session
     session.setAttribute("productId",pid);
     session.setAttribute("customerId",cid);
 
