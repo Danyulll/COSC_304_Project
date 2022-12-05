@@ -25,7 +25,7 @@
 
  // Select orders and their products
 
- String SQL = "SELECT * FROM Warehouse as W JOIN productinventory as P ON W.warehouseId=P.warehouseId";
+ String SQL = "SELECT * FROM warehouse as W JOIN productinventory as P ON W.warehouseId=P.warehouseId";
  ResultSet rst = stmt.executeQuery(SQL);
 
  // Display items in each order in a table
@@ -44,7 +44,7 @@ while(rst.next()){
 		ResultSet rst2 = pstmt.executeQuery();
 		out.println("<tr><th>Product Id</th><th>Quantity</th><th>Price</th></tr>");
 		while(rst2.next()){
-			out.println("<tr><td>"+rst2.getString("productId")+"</td><td>"+rst2.getString("quantity")+"</td>"+"<td>$"+rst2.getBigDecimal("price")+"</td></tr>");
+			out.println("<tr><td>"+rst2.getString("productId")+"</td><td align=\"center\"><input type=\"text\" name=\"newqty\" size=\"3\" value="+rst2.getString("quantity")+" </td><td>$"+rst2.getBigDecimal("price")+"</td></tr>");
 		}
 		out.println("</table>");
 		
@@ -52,8 +52,15 @@ while(rst.next()){
 		
 	}
 
+    
+       
+
 }
 
+out.println("<br>");
+out.println("<style>table,th,td { border: 1px solid black;}</style>");
+out.println("<table><tr><th colspan=\"2\">Update Inventory</th><th><form method=\"get\" action=\"warehouse.jsp\"><input type=\"submit\" value=\"Update\" name=\"submit\"></form></th></tr>");
+out.println("<tr><td><input type=\"text\" name=\"wareid\" size=\"3\" placeholder=\"WarehouseId\"></td><td><input type=\"text\" name=\"prodid\" size=\"3\" placeholder=\"ProductId\"></td><td><input type=\"text\" name=\"qty\" size=\"3\" placeholder=\"Quantity\"></td></tr></table>");
 
 // Connection automatically closed
 
