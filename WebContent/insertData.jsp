@@ -42,6 +42,9 @@ INSERT INTO ordersummary (customerId, orderDate, totalAmount) VALUES (1, '2019-1
  
  
              int rowcount0 = stmt.executeUpdate("INSERT INTO warehouse(warehouseName) VALUES ('warehouse1')");
+             int rowcount69 = stmt.executeUpdate("INSERT INTO warehouse(warehouseName) VALUES ('warehouse2')");
+             int rowcount6969 = stmt.executeUpdate("INSERT INTO warehouse(warehouseName) VALUES ('warehouse3')");
+             int rowcount696969 = stmt.executeUpdate("INSERT INTO productinventory VALUES (2,2,5,19)");
              out.println("<br>Did warehouse insert work " + rowcount0);
  
              int rowcount100 = stmt.executeUpdate("INSERT INTO productinventory(productId,warehouseId,quantity) VALUES (1,1,10)");
