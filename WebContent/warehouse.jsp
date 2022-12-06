@@ -26,7 +26,7 @@
 	//update warehouse inventory (if needed)
 	if(request.getParameter("wareid") != null && request.getParameter("wareid") != "" && request.getParameter("prodid") != null
 	&& request.getParameter("prodid") != "" && request.getParameter("qty") != null && request.getParameter("qty") != ""){
-		out.println("working");
+		
 
 		int whouseid = Integer.parseInt(request.getParameter("wareid"));
 		int productid = Integer.parseInt(request.getParameter("prodid"));
@@ -36,7 +36,12 @@
 		updatepst.setInt(1,newquantity);
 		updatepst.setInt(2,whouseid);
 		updatepst.setInt(3,productid);
-		ResultSet updaterst = updatepst.executeQuery();
+		
+		try{
+			ResultSet updaterst = updatepst.executeQuery();
+		} catch(Exception e){
+			
+		}
 		//updaterst.next();
 	}
 
@@ -61,7 +66,7 @@ while(rst.next()){
 		ResultSet rst2 = pstmt.executeQuery();
 		out.println("<tr><th>Product Id</th><th>Quantity</th><th>Price</th></tr>");
 		while(rst2.next()){
-			out.println("<tr><td>"+rst2.getString("productId")+"</td><td align=\"center\"><input type=\"text\" name=\"newqty\" size=\"3\" value="+rst2.getString("quantity")+" </td><td>$"+rst2.getBigDecimal("price")+"</td></tr>");
+			out.println("<tr><td>"+rst2.getString("productId")+"</td><td>"+rst2.getString("quantity")+" </td><td>$"+rst2.getBigDecimal("price")+"</td></tr>");
 		}
 		out.println("</table>");
 		
