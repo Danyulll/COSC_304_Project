@@ -56,11 +56,13 @@ while(rst.next()){
        
 
 }
-
 out.println("<br>");
+
 out.println("<style>table,th,td { border: 1px solid black;}</style>");
-out.println("<table><tr><th colspan=\"2\">Update Inventory</th><th><form method=\"get\" action=\"warehouse.jsp\"><input type=\"submit\" value=\"Update\" name=\"submit\"></form></th></tr>");
-out.println("<tr><td><input type=\"text\" name=\"wareid\" size=\"3\" placeholder=\"WarehouseId\"></td><td><input type=\"text\" name=\"prodid\" size=\"3\" placeholder=\"ProductId\"></td><td><input type=\"text\" name=\"qty\" size=\"3\" placeholder=\"Quantity\"></td></tr></table>");
+out.println("<table><tr><th colspan=\"3\">Update Inventory</th></tr>");
+out.println("<tr><td>Warehouse Id</td><td>Product Id</td><td>New Quantity  </td></tr>");
+out.println("<tr><td><form action=\"warehouse.jsp\"></form><input type=\"text\" name=\"wareid\" size=\"8\"<td><td><input type=\"text\" name=\"prodid\" size=\"8\"></td><td><input type=\"text\" name=\"qty\" size=\"8\"></td></tr></table>");
+out.println("<br><input type=\"submit\" value=\"Submit\"></form>");
 
 // Connection automatically closed
 
