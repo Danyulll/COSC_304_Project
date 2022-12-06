@@ -128,6 +128,7 @@ CREATE TABLE productinventory (
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
+
 CREATE TABLE review (
     reviewId            INT IDENTITY,
     reviewRating        INT,
@@ -141,6 +142,7 @@ CREATE TABLE review (
     FOREIGN KEY (productId) REFERENCES product(productId)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
+
 
 INSERT INTO category(categoryName) VALUES ('Sports');
 INSERT INTO category(categoryName) VALUES ('Life Style');
@@ -235,6 +237,18 @@ INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, order
 INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (1, '2019-11-19 03:20:01', 'Shipment of straws', 4, 5 )
 INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (1, '2019-10-02 12:04:59', 'Shipment of replacements', 5, 7 )
 INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (1, '2019-09-02 03:23:04','Shipment of bottles', 6, 2 )
+
+INSERT INTO productinventory (productId, warehouseId, quantity, price) VALUES (1, 1, 500, 25000.00)
+INSERT INTO productinventory (productId, warehouseId, quantity, price) VALUES (2,1 , 1000, 45000.00)
+INSERT INTO productinventory (productId, warehouseId, quantity, price) VALUES (3,2, 200, 4650.00)
+INSERT INTO productinventory (productId, warehouseId, quantity, price) VALUES (4, 3, 900, 34200.00)
+INSERT INTO productinventory (productId, warehouseId, quantity, price) VALUES (5,4, 2500, 127475.00)
+INSERT INTO productinventory (productId, warehouseId, quantity, price) VALUES (6,5, 1100, 27000.00)
+INSERT INTO productinventory (productId, warehouseId, quantity, price) VALUES (7,6, 350, 1750.00)
+
+INSERT INTO review (reviewId, reviewRating, reviewDate, customerId, productId, reviewComment) VALUES (1, 5, '2021-11-01 09:30:24', 1, 3, 'I love this product a lot, worth the money')
+INSERT INTO review (reviewId, reviewRating, reviewDate, customerId, productId, reviewComment) VALUES (2, 4, '2021-12-23 08:30:43', 2, 5, 'Will definitly buy again')
+INSERT INTO review (reviewId, reviewRating, reviewDate, customerId, productId, reviewComment) VALUES (3, 5 '2021-12-30 06:45:59', 4, 1, 'Works as advertised' )
 
 */ 
 
