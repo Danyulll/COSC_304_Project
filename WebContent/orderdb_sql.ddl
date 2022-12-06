@@ -115,6 +115,7 @@ CREATE TABLE shipment (
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
+
 CREATE TABLE productinventory ( 
     productId           INT,
     warehouseId         INT,
@@ -227,4 +228,13 @@ INSERT INTO warehouse (warehouseId, warehouseName) VALUES (3, 'Plastic Warehouse
 INSERT INTO warehouse (warehouseId, warehouseName) VALUES (4, 'Best Warehouse')
 INSERT INTO warehouse (warehouseId, warehouseName) VALUES (5, 'EZ Shipping Warehouse')
 INSERT INTO warehouse (warehouseId, warehouseName) VALUES (6, '#1 Warehouse')
+
+INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (1, '2020-10-02 05:30:20', 'Shipment of bottles', 1, 1 )
+INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (2, '2020-05-20 11:02:45', 'Shipment jugs', 2, 5 )
+INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (1, '2019-11-11 09:05:11', 'Shipment bottles and jugs', 3, 3 )
+INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (1, '2019-11-19 03:20:01', 'Shipment of straws', 4, 5 )
+INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (1, '2019-10-02 12:04:59', 'Shipment of replacements', 5, 7 )
+INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (1, '2019-09-02 03:23:04','Shipment of bottles', 6, 2 )
+
 */ 
+
