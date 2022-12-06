@@ -23,8 +23,25 @@
  Connection con = DriverManager.getConnection(url, uid, pw);
  Statement stmt = con.createStatement(); ){
 
- // Select orders and their products
+	//update warehouse inventory (if needed)
+	if(request.getParameter("wareid") != null && request.getParameter("wareid") != "" && request.getParameter("prodid") != null
+	&& request.getParameter("prodid") != "" && request.getParameter("qty") != null && request.getParameter("qty") != ""){
+		out.println("working");
 
+		int whouseid = Integer.parseInt(request.getParameter("wareid"));
+		int productid = Integer.parseInt(request.getParameter("prodid"));
+		int newquantity = Integer.parseInt(request.getParameter("qty"));
+		
+		PreparedStatement updatepst = con.prepareStatement("UPDATE productinventory SET quantity = ? WHERE warehouseId=? AND productId=?");
+		updatepst.setInt(1,newquantity);
+		updatepst.setInt(2,whouseid);
+		updatepst.setInt(3,productid);
+		ResultSet updaterst = updatepst.executeQuery();
+		//updaterst.next();
+	}
+
+
+ // Select orders and their products
  String SQL = "SELECT * FROM warehouse as W JOIN productinventory as P ON W.warehouseId=P.warehouseId";
  ResultSet rst = stmt.executeQuery(SQL);
 
@@ -61,7 +78,7 @@ out.println("<br>");
 out.println("<style>table,th,td { border: 1px solid black;}</style>");
 out.println("<table><tr><th colspan=\"3\">Update Inventory</th></tr>");
 out.println("<tr><td>Warehouse Id</td><td>Product Id</td><td>New Quantity  </td></tr>");
-out.println("<tr><td><form action=\"warehouse.jsp\"></form><input type=\"text\" name=\"wareid\" size=\"8\"<td><td><input type=\"text\" name=\"prodid\" size=\"8\"></td><td><input type=\"text\" name=\"qty\" size=\"8\"></td></tr></table>");
+out.println("<tr><td><form action=\"warehouse.jsp\"><input type=\"text\" name=\"wareid\" size=\"8\"<td><td><input type=\"text\" name=\"prodid\" size=\"8\"></td><td><input type=\"text\" name=\"qty\" size=\"8\"></td></tr></table>");
 out.println("<br><input type=\"submit\" value=\"Submit\"></form>");
 
 // Connection automatically closed
