@@ -100,7 +100,7 @@ CREATE TABLE warehouse (
     warehouseName       VARCHAR(30),    
     PRIMARY KEY (warehouseId)
 );
-warehouseId, warehouseName
+
 
 CREATE TABLE shipment (
     shipmentId          INT IDENTITY,
