@@ -213,7 +213,7 @@ SELECT @orderId = @@IDENTITY
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 21.35)
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 19, 2, 81)
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 20, 3, 10);
-
+/*
 INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (1, 'Visa', '1234567890123456', '06/25', 1)
 INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (2, 'Mastercard', '5299640000000000', '07/26', 2)
 INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (1, 'Visa', '0000000000000000', '03/23', 3)
@@ -228,3 +228,4 @@ INSERT INTO warehouse (warehouseId, warehouseName) VALUES (3, 'Plastic Warehouse
 INSERT INTO warehouse (warehouseId, warehouseName) VALUES (4, 'Best Warehouse')
 INSERT INTO warehouse (warehouseId, warehouseName) VALUES (5, 'EZ Shipping Warehouse')
 INSERT INTO warehouse (warehouseId, warehouseName) VALUES (6, '#1 Warehouse')
+*/ 
