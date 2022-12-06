@@ -100,6 +100,7 @@ CREATE TABLE warehouse (
     warehouseName       VARCHAR(30),    
     PRIMARY KEY (warehouseId)
 );
+warehouseId, warehouseName
 
 CREATE TABLE shipment (
     shipmentId          INT IDENTITY,
@@ -113,6 +114,7 @@ CREATE TABLE shipment (
     FOREIGN KEY (orderId) REFERENCES ordersummary(orderId)
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
+shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId
 
 CREATE TABLE productinventory ( 
     productId           INT,
@@ -140,52 +142,43 @@ CREATE TABLE review (
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO category(categoryName) VALUES ('Beverages');
-INSERT INTO category(categoryName) VALUES ('Condiments');
-INSERT INTO category(categoryName) VALUES ('Dairy Products');
-INSERT INTO category(categoryName) VALUES ('Produce');
-INSERT INTO category(categoryName) VALUES ('Meat/Poultry');
-INSERT INTO category(categoryName) VALUES ('Seafood');
-INSERT INTO category(categoryName) VALUES ('Confections');
-INSERT INTO category(categoryName) VALUES ('Grains/Cereals');
+INSERT INTO category(categoryName) VALUES ('Sports');
+INSERT INTO category(categoryName) VALUES ('Life Style');
+INSERT INTO category(categoryName) VALUES ('Coffee');
+INSERT INTO category(categoryName) VALUES ('Cups');
+INSERT INTO category(categoryName) VALUES ('Accessories');
+INSERT INTO category(categoryName) VALUES ('Food Jars');
+INSERT INTO category(categoryName) VALUES ('Bags');
+INSERT INTO category(categoryName) VALUES ('Beer,Wine');
 
 
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Chai', 1, '10 boxes x 20 bags',18.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Chang',1,'24 - 12 oz bottles',19.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Aniseed Syrup',2,'12 - 550 ml bottles',10.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Chef Anton''s Cajun Seasoning',2,'48 - 6 oz jars',22.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Chef Anton''s Gumbo Mix',2,'36 boxes',21.35);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Grandma''s Boysenberry Spread',2,'12 - 8 oz jars',25.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Uncle Bob''s Organic Dried Pears',4,'12 - 1 lb pkgs.',30.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Northwoods Cranberry Sauce',2,'12 - 12 oz jars',40.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Mishi Kobe Niku',5,'18 - 500 g pkgs.',97.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Ikura',6,'12 - 200 ml jars',31.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Queso Cabrales',3,'1 kg pkg.',21.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Queso Manchego La Pastora',3,'10 - 500 g pkgs.',38.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Tofu',4,'40 - 100 g pkgs.',23.25);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Genen Shouyu',2,'24 - 250 ml bottles',15.50);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Pavlova',7,'32 - 500 g boxes',17.45);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Alice Mutton',5,'20 - 1 kg tins',39.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Carnarvon Tigers',6,'16 kg pkg.',62.50);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Teatime Chocolate Biscuits',7,'10 boxes x 12 pieces',9.20);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sir Rodney''s Marmalade',7,'30 gift boxes',81.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sir Rodney''s Scones',7,'24 pkgs. x 4 pieces',10.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Gustaf''s Knackebread',8,'24 - 500 g pkgs.',21.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sasquatch Ale',1,'24 - 12 oz bottles',14.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Steeleye Stout',1,'24 - 12 oz bottles',18.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Inlagd Sill',6,'24 - 250 g  jars',19.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Boston Crab Meat',6,'24 - 4 oz tins',18.40);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Jack''s New England Clam Chowder',6,'12 - 12 oz cans',9.65);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Singaporean Hokkien Fried Mee',8,'32 - 1 kg pkgs.',14.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Louisiana Fiery Hot Pepper Sauce',2,'32 - 8 oz bottles',21.05);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Laughing Lumberjack Lager',1,'24 - 12 oz bottles',14.00);
+
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Everyday Flask', 1, '500ml insulated flask, good for all your daily needs',50.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Kids Flask',1,'300ml insulated flask perfect for your childs first day at school',30.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Insulated Flask',2,'1L bottle to keep any drink warm, or cold!',80.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sports Water Bottle',2,'500mL water bottle to accompany you in the wils',25.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sports Water Bottle XL',2,'The 1L version of our popular Sports Water Bottle',40.99);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Coffee Mug',2,'200mL mug perfect for you morning coffee',25.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Coffee Mug XL',4,'The 1L version of our popular Coffee Mug',35.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Hydro Cup',2,'A cup, usefull for multiple purposes',5.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Everday Flask Mouth Replacement',5,'Replacement parts for your flask',20.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Replacement Straw',6,'Replacement straw, compatible with all our flasks',10.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Food Jar 1',3,'Able to fit 500g of food',21.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Food Jar 2',3,'Able to fit 700g of food',38.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Food Jar 3',4,'Able to fit 1kg of Food',23.25);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Hydroflask Bag',2,'Own you very own Hydroflask branded bag!',100.00);
+INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Alcohol Flask',7,'Keeps all types of alcohol fresh',50.99);
+
     
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Arnold', 'Anderson', 'a.anderson@gmail.com', '204-111-2222', '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada', 'arnold' , 'test');
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Bobby', 'Brown', 'bobby.brown@hotmail.ca', '572-342-8911', '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States', 'bobby' , 'bobby');
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Candace', 'Cole', 'cole@charity.org', '333-444-5555', '333 Central Crescent', 'Chicago', 'IL', '33333', 'United States', 'candace' , 'password');
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Darren', 'Doe', 'oe@doe.com', '250-807-2222', '444 Dover Lane', 'Kelowna', 'BC', 'V1V 2X9', 'Canada', 'darren' , 'pw');
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Elizabeth', 'Elliott', 'engel@uiowa.edu', '555-666-7777', '555 Everwood Street', 'Iowa City', 'IA', '52241', 'United States', 'beth' , 'test');
-
+INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Avi', 'Pradhan', 'apr@ubc.com', '111-111-111', '111 UBC Street', 'Kelowna', 'BC', 'V1V 1E1','Canada', 'avi', 'pw' )
+INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Daniel', 'Krasnov', 'dk@ubc.com', '222-222-222', '222 UBC Street', 'Kelowna', 'BC', 'V2V 121', 'Canada', 'dan', 'pw')
+INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Ross', 'Cooper', 'rc@ubc.com', '333-333-333', '333 Hill Street', 'Vancouver', 'BC', 'V3V 131', 'Canada', 'ross', 'pw')
+INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Keiran', 'Malott', 'km@ubc.com', '444-444-444', '444 River Street', 'Toronto', 'ON', 'V4V 141', 'Canada', 'kei', 'pw')
 
 DECLARE @orderId int
 INSERT INTO ordersummary (customerId, orderDate, totalAmount) VALUES (1, '2019-10-15 10:25:55', 91.70)
@@ -220,3 +213,18 @@ SELECT @orderId = @@IDENTITY
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 21.35)
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 19, 2, 81)
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 20, 3, 10);
+
+INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (1, 'Visa', '1234567890123456', '06/25', 1)
+INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (2, 'Mastercard', '5299640000000000', '07/26', 2)
+INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (1, 'Visa', '0000000000000000', '03/23', 3)
+INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (3, 'Amex', '370601052937734', '04/28', 4)
+INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (2, 'Mastercard', '5516697954443486', '08/23', 5)
+INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (3, 'Amex', '378350952578402', '10/24', 6)
+INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (1, 'Visa', '4916801926971355', '01/28', 7)
+
+INSERT INTO warehouse (warehouseId, warehouseName) VALUES (1, 'Bottler.INC')
+INSERT INTO warehouse (warehouseId, warehouseName) VALUES (2, 'Water.Co')
+INSERT INTO warehouse (warehouseId, warehouseName) VALUES (3, 'Plastic Warehouse')
+INSERT INTO warehouse (warehouseId, warehouseName) VALUES (4, 'Best Warehouse')
+INSERT INTO warehouse (warehouseId, warehouseName) VALUES (5, 'EZ Shipping Warehouse')
+INSERT INTO warehouse (warehouseId, warehouseName) VALUES (6, '#1 Warehouse')
