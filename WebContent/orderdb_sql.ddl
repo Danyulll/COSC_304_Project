@@ -114,7 +114,6 @@ CREATE TABLE shipment (
     FOREIGN KEY (orderId) REFERENCES ordersummary(orderId)
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
-shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId
 
 CREATE TABLE productinventory ( 
     productId           INT,
