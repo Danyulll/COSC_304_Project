@@ -1,3 +1,9 @@
+CREATE DATABASE orders;
+go;
+
+USE orders;
+go;
+
 DROP TABLE review;
 DROP TABLE shipment;
 DROP TABLE productinventory;
@@ -155,21 +161,21 @@ INSERT INTO category(categoryName) VALUES ('Beer,Wine');
 
 
 
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Everyday Flask', 1, '500ml insulated flask, good for all your daily needs',50.00,'./img/everydayflask.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Kids Flask',1,'300ml insulated flask perfect for your childs first day at school',30.00,'./img/Kidsflask.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Everyday Flask', 2, '500ml insulated flask, good for all your daily needs',50.00,'./img/everydayflask.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Kids Flask',2,'300ml insulated flask perfect for your childs first day at school',30.00,'./img/Kidsflask.jpg');
 INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Insulated Flask',2,'1L bottle to keep any drink warm, or cold!',80.00,'./img/Insulatedflask.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Sports Water Bottle',2,'500mL water bottle to accompany you in the wils',25.00,'./img/sportswaterbottle.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Sports Water Bottle XL',2,'The 1L version of our popular Sports Water Bottle',40.99, './img/plzwork.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Coffee Mug',2,'200mL mug perfect for you morning coffee',25.00, './img/CoffeeMug.png');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Coffee Mug XL',4,'The 1L version of our popular Coffee Mug',35.00,'./img/CoffeeMugXL.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Hydro Cup',2,'A cup, usefull for multiple purposes',5.00, './img/Hydrocup.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Sports Water Bottle',1,'500mL water bottle to accompany you in the wils',25.00,'./img/sportswaterbottle.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Sports Water Bottle XL',1,'The 1L version of our popular Sports Water Bottle',40.99, './img/plzwork.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Coffee Mug',3,'200mL mug perfect for you morning coffee',25.00, './img/CoffeeMug.png');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Coffee Mug XL',3,'The 1L version of our popular Coffee Mug',35.00,'./img/CoffeeMugXL.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Hydro Cup',4,'A cup, usefull for multiple purposes',5.00, './img/Hydrocup.jpg');
 INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Everday Flask Mouth Replacement',5,'Replacement parts for your flask',20.00, './img/EverdayFlaskMouthReplacement.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Replacement Straw',6,'Replacement straw, compatible with all our flasks',10.00, './img/ReplacementStraw.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Food Jar 1',3,'Able to fit 500g of food',21.00, './img/Foodjar1.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Food Jar 2',3,'Able to fit 700g of food',38.00, './img/Foodjar2.png');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Food Jar 3',4,'Able to fit 1kg of Food',23.25, './img/Foodjar3.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Hydroflask Bag',2,'Own you very own Hydroflask branded bag!',100.00,'./img/Hydroflaskbag.jpg');
-INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Alcohol Flask',7,'Keeps all types of alcohol fresh',50.99,'./img/Alcoholflask.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Replacement Straw',5,'Replacement straw, compatible with all our flasks',10.00, './img/ReplacementStraw.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Food Jar 1',6,'Able to fit 500g of food',21.00, './img/Foodjar1.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Food Jar 2',6,'Able to fit 700g of food',38.00, './img/Foodjar2.png');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Food Jar 3',6,'Able to fit 1kg of Food',23.25, './img/Foodjar3.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Hydroflask Bag',7,'Own you very own Hydroflask branded bag!',100.00,'./img/Hydroflaskbag.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Alcohol Flask',8,'Keeps all types of alcohol fresh',50.99,'./img/Alcoholflask.jpg');
 
     
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Arnold', 'Anderson', 'a.anderson@gmail.com', '204-111-2222', '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada', 'arnold' , 'test');
@@ -226,12 +232,12 @@ INSERT INTO paymentmethod (paymentType, paymentNumber, paymentExpiryDate, custom
 INSERT INTO paymentmethod (paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES ('Visa', '4916801926971355', '2028-01-01 00:00:00', 7)
 
 
-INSERT INTO warehouse (warehouseId, warehouseName) VALUES (1, 'Bottler.INC')
-INSERT INTO warehouse (warehouseId, warehouseName) VALUES (2, 'Water.Co')
-INSERT INTO warehouse (warehouseId, warehouseName) VALUES (3, 'Plastic Warehouse')
-INSERT INTO warehouse (warehouseId, warehouseName) VALUES (4, 'Best Warehouse')
-INSERT INTO warehouse (warehouseId, warehouseName) VALUES (5, 'EZ Shipping Warehouse')
-INSERT INTO warehouse (warehouseId, warehouseName) VALUES (6, '#1 Warehouse')
+INSERT INTO warehouse (warehouseName) VALUES ('Bottler.INC')
+INSERT INTO warehouse (warehouseName) VALUES ('Water.Co')
+INSERT INTO warehouse (warehouseName) VALUES ('Plastic Warehouse')
+INSERT INTO warehouse (warehouseName) VALUES ('Best Warehouse')
+INSERT INTO warehouse (warehouseName) VALUES ('EZ Shipping Warehouse')
+INSERT INTO warehouse (warehouseName) VALUES ('#1 Warehouse')
 
 INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (1, '2020-10-02 05:30:20', 'Shipment of bottles', 1, 1 )
 INSERT INTO shipment (shipmentId, shipmentDate, shipmentDesc, warehouseId, orderId) VALUES (2, '2020-05-20 11:02:45', 'Shipment jugs', 2, 5 )

@@ -1,5 +1,6 @@
 <%@ page import="java.sql.*" %>
 <%@ page language="java" import="java.io.*" %>
+<%@ include file="jdbc.jsp" %>
 <%
 String authenticatedUser = null;
 session = request.getSession(true);// May create new session
@@ -27,9 +28,11 @@ String validateLogin(JspWriter out, HttpServletRequest request, HttpSession sess
     String pw = "YourStrong@Passw0rd";
     
     // Try-catch for connection
-    try(
-    Connection con = DriverManager.getConnection(url, uid, pw);
-    Statement stmt = con.createStatement(); ){
+    try{
+        getConnection();
+        Statement stmt = con.createStatement(); 			
+	    stmt.execute("USE orders");
+
         // Select userid and their passwords
         String SQL = "SELECT userid, password FROM customer";
         ResultSet rst = stmt.executeQuery(SQL);
@@ -48,8 +51,8 @@ String validateLogin(JspWriter out, HttpServletRequest request, HttpSession sess
             session.setAttribute("loginMessage","Failed login.");
             return retStr;
         }
-        // Connection automatically closed
     } catch(SQLException ex) {out.println(ex);}
+    closeConnection();
     return retStr;
 }
 %>

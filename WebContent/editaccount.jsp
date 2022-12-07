@@ -53,7 +53,10 @@
 
     //check current username and password are valid
     boolean validLogin = false;
-    try(Connection con = DriverManager.getConnection(url, uid, pw);){
+    try{
+        getConnection();
+        Statement stmt = con.createStatement(); 			
+        stmt.execute("USE orders");
         String SQL = "SELECT userid FROM customer WHERE userid = ? AND password = ?";
         PreparedStatement pst = con.prepareStatement(SQL);
         pst.setString(1, user_info[0]);
@@ -74,7 +77,10 @@
     } else if(validLogin == false){
         out.println("Your username or password are not associated with a current account. Please try again.");
     } else{
-        try(Connection con = DriverManager.getConnection(url, uid, pw);){
+        try{
+            getConnection();
+            Statement stmt2 = con.createStatement(); 
+            stmt2.execute("USE orders");
             String SQL = "UPDATE CUSTOMER SET password = ?, address = ?, city = ?, state = ?, postalCode = ?, country = ? WHERE userid = ?";
             //String SQL = "INSERT INTO CUSTOMER (password, address, city, state, postalCode, country) VALUES (?,?,?,?,?,?)";
             PreparedStatement pst = con.prepareStatement(SQL);
@@ -84,7 +90,7 @@
                 j++;
             }
             pst.setString(7, user_info[0]);
-            ResultSet rst = pst.executeQuery();
+            int rst = pst.executeUpdate();
         } catch (SQLException ex) { out.println(ex); }
         finally{closeConnection();}
         out.println("Your account information has been updated.");

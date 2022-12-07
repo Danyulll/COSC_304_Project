@@ -1,6 +1,7 @@
 <%@ page import="java.sql.*,java.net.URLEncoder" %>
 <%@ page import="java.text.NumberFormat" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF8"%>
+<%@ include file="jdbc.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,7 +36,6 @@
         <input type="submit" value="Submit">
     </form>
 
-    <%@ include file="jdbc.jsp" %>
     <%
     //get values from form
     String[] user_info = new String[11];
@@ -73,7 +73,10 @@
 
     //check username is unique
     boolean uniqueusername = true;
-    try(Connection con = DriverManager.getConnection(url, uid, pw);){
+    try{ 	
+	    getConnection();
+	    Statement stmt = con.createStatement(); 
+	    stmt.execute("USE orders");
         String SQL = "SELECT userid FROM customer WHERE userid = ?";
         PreparedStatement pst = con.prepareStatement(SQL);
         pst.setString(1, username);
@@ -93,13 +96,16 @@
     } else if(uniqueusername == false){
         out.println("Your username is already taken. Please enter another.");
     } else{
-        try(Connection con = DriverManager.getConnection(url, uid, pw);){
+        try{
+            getConnection();
+            Statement stmt2 = con.createStatement(); 			
+            stmt2.execute("USE orders");
             String SQL = "INSERT INTO CUSTOMER (userid, password, firstName, lastName, email, phonenum, address, city, state, postalCode, country) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement pst = con.prepareStatement(SQL);
             for(int i = 0; i < user_info.length; i++){
                 pst.setString((i+1), user_info[i]);
             }
-            ResultSet rst = pst.executeQuery();
+            int rst = pst.executeUpdate();
         } catch (SQLException ex) { out.println(ex); }
         finally{closeConnection();}
         out.println("Your account has been created!");

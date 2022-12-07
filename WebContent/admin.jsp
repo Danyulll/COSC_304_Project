@@ -5,39 +5,48 @@
 </head>
 <body>
 
-<%@ include file="jdbc.jsp"%>
 <%@ include file="auth.jsp"%>
+<%@ page import="java.text.NumberFormat" %>
+<%@ include file="jdbc.jsp" %>
 <%@ page import="java.util.Scanner" %>
 <%@ page import="java.io.File" %>
-<h2> Administrator Sales Report by Day</h2>
 
 <%
-String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
-String uid = "SA";
-String pw = "YourStrong@Passw0rd";
-try (Connection con = DriverManager.getConnection(url, uid, pw);
-Statement stmt = con.createStatement(); )
-	{
-		//String SQL = "SELECT shipmentDate, SUM(totalAmount) AS total FROM ((shipment JOIN productinventory ON shipment.warehouseId = productinventory.warehouseId) JOIN orderproduct ON productinventory.productId = orderproduct.productId) JOIN ordersummary ON orderproduct.orderId = ordersummary.orderId  GROUP BY shipmentDate";
-        String SQL = "SELECT shipmentDate, SUM(totalAmount) total FROM shipment S JOIN orderSummary OS ON S.orderId=OS.orderId GROUP BY shipmentDate";
-		ResultSet rst = stmt.executeQuery(SQL);
+	String userName = (String) session.getAttribute("authenticatedUser");
+%>
 
-        // Display items in each order in a table
-        out.println("<style>table,th,td { border: 1px solid black;}</style>");
-        out.println("<table><tr><th>Order Date</th><th>Total Order Amount</th></tr>");
-        while(rst.next()){
-            out.println("<tr><td>" + rst.getDate("shipmentDate") + "</td><td>$" + rst.getBigDecimal("total") + "</td></tr>");
-        }   
-        out.println("</table>");
+<%
 
-	} 
-	catch(SQLException ex) {
-		out.println(ex);
-	}
-	finally
+// Print out total order amount by day
+String sql = "select year(orderDate), month(orderDate), day(orderDate), SUM(totalAmount) FROM OrderSummary GROUP BY year(orderDate), month(orderDate), day(orderDate)";
+
+NumberFormat currFormat = NumberFormat.getCurrencyInstance();
+
+try 
+{	
+	out.println("<h3>Administrator Sales Report by Day</h3>");
+	
+	getConnection();
+	Statement stmt = con.createStatement(); 
+	stmt.execute("USE orders");
+
+	ResultSet rst = con.createStatement().executeQuery(sql);		
+	out.println("<table class=\"table\" border=\"1\">");
+	out.println("<tr><th>Order Date</th><th>Total Order Amount</th>");	
+
+	while (rst.next())
 	{
-		closeConnection();
+		out.println("<tr><td>"+rst.getString(1)+"-"+rst.getString(2)+"-"+rst.getString(3)+"</td><td>"+currFormat.format(rst.getDouble(4))+"</td></tr>");
 	}
+	out.println("</table>");		
+}
+catch (SQLException ex) 
+{ 	out.println(ex); 
+}
+finally
+{	
+	closeConnection();	
+}
 %>
 
 <h2>Reload Database</h2>
@@ -47,9 +56,9 @@ Statement stmt = con.createStatement(); )
 if (request.getParameter("submit") != null) {
 	out.print("<h1>Connecting to database.</h1><br><br>");
 
-	Connection con = DriverManager.getConnection(url, uid, pw);
+	getConnection();
 			
-	String fileName = "/usr/local/tomcat/webapps/shop/orderdb_sql.ddl";
+	String fileName = "/usr/local/tomcat/webapps/shop/ddl/orderdb_sql.ddl";
 	
 	try
 	{
@@ -62,16 +71,16 @@ if (request.getParameter("submit") != null) {
 		while (scanner.hasNext())
 		{
 			String command = scanner.next();
-			if (command.trim().equals(""))
+			if (command.trim().equals("") || command.trim().equals("go"))
 				continue;
-			// out.print(command);        // Uncomment if want to see commands executed
+			// out.print(command+"<br>");        // Uncomment if want to see commands executed
 			try
 			{
 				stmt.execute(command);
 			}
 			catch (Exception e)
 			{	// Keep running on exception.  This is mostly for DROP TABLE if table does not exist.
-				out.print(e);
+				out.println(e+"<br>");
 			}
 		}	 
 		scanner.close();
@@ -86,5 +95,10 @@ if (request.getParameter("submit") != null) {
 
 %>
 
+<h2><a href="warehouse.jsp">View Warehouses</a></h2>
 </body>
 </html>
+
+</body>
+</html>
+

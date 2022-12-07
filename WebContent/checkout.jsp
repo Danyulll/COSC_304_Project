@@ -1,4 +1,4 @@
-z<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Hydrobottle CheckOut Line</title>

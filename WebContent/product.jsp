@@ -1,21 +1,30 @@
-<%@ page trimDirectiveWhitespaces="true" import="java.sql.*,java.io.*" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.text.NumberFormat" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF8"%>
+<%@ include file="jdbc.jsp" %>
 
-<!DOCTYPE html>
 <html>
-    <head>
-        <title>Product Information</title>
-    </head>
+<head>
+<title>Ray's Grocery - Product Information</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
 
-    <h1>Product Info</h1>
+<%@ include file="header.jsp" %>
 
-    <% 
-    String id = request.getParameter("id");
-    String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
-    String uid = "SA";
-    String pw = "YourStrong@Passw0rd";
+<%
+// Get product name to search for
+String id = request.getParameter("id");
 
-    try(
-	Connection con = DriverManager.getConnection(url, uid, pw); ){
+String sql = "SELECT productId, productName, productPrice, productImageURL, productImage FROM Product P  WHERE productId = ?";
+
+NumberFormat currFormat = NumberFormat.getCurrencyInstance();
+
+try 
+{
+	getConnection();
+	Statement stmt = con.createStatement(); 			
+	stmt.execute("USE orders");
 
 	PreparedStatement pst = con.prepareStatement("Select * FROM product where productId=?");
 	pst.setString(1,id);
@@ -23,13 +32,17 @@
     rst.next();
     if(rst.getString("productImageURL") != null){
         out.println("<h2>"+rst.getString("productName")+"</h2>");
-	    out.println("<br><img src=\""+rst.getString("productImageURL")+"\"width=\"500\" height=\"500\"\">");
+	    out.println("<br><img src=\""+rst.getString("productImageURL")+"\"width=\"500\"height=\"500\">");
+        
     
     }
 
     if(rst.getBlob("productImage") != null){
        out.println("<img src=\"displayImage.jsp?id=" + id+"\">");
     }
+
+    out.println("<br><strong>Description:</strong>"+ "<br>" + rst.getString("productDesc"));
+    
 
     out.println("<br><strong>Id: </strong>"+rst.getString("productId"));
     out.println("<br><strong>Price: </strong>"+rst.getString("productPrice"));
@@ -43,9 +56,11 @@
 if(username==null){
     out.println("<br><a href=\"login.jsp\">Log in to leave a review</a>");
 }else{
-    try(
-	Connection con = DriverManager.getConnection(url, uid, pw); ){
-    String pid = id;
+    try{
+	String pid = id;
+    getConnection();
+	Statement stmt = con.createStatement(); 			
+	stmt.execute("USE orders");
 
     String SQL3 = "SELECT customerId FROM customer WHERE userid=?";
     PreparedStatement pst3 = con.prepareStatement(SQL3);
@@ -66,7 +81,10 @@ if(username==null){
     
 <%
 out.println("<h2>Reviews</h2>");
-try(Connection con = DriverManager.getConnection(url, uid, pw);){
+try{
+	getConnection();
+	Statement stmt = con.createStatement(); 			
+	stmt.execute("USE orders");
 	// Create query
 	String SQL2 = "SELECT * FROM review  WHERE productId = ?";
 

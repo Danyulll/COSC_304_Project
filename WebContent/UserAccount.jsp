@@ -13,7 +13,10 @@
     <%@ include file="jdbc.jsp" %>
     <h3><p1 style ="font-family:Courier New">Account Information:</h3></p1>
     <%
-    try(Connection con = DriverManager.getConnection(url, uid, pw);){
+    try{
+        getConnection();
+	    Statement stmt = con.createStatement(); 			
+	    stmt.execute("USE orders");
         String SQL = "SELECT customerId,firstName,lastName,email,phonenum,address,city,state,postalCode,country,userid FROM customer WHERE userid = ?";
         PreparedStatement pst = null;
         ResultSet rst = null;
@@ -49,7 +52,10 @@
     <h3><p1 style ="font-family:Courier New">List all Orders:</h3></p1>
 
     <%
-    try(Connection con = DriverManager.getConnection(url, uid, pw);){
+    try{
+        getConnection();
+	    Statement stmt2 = con.createStatement(); 			
+	    stmt2.execute("USE orders");
         String SQL = "SELECT orderId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry, ordersummary.customerId FROM customer JOIN ordersummary ON customer.customerId = ordersummary.customerId WHERE userid = ?";
         PreparedStatement pst = null;
         ResultSet rst = null;

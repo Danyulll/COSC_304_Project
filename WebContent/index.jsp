@@ -55,8 +55,11 @@ if(username != null){
 <%@ include file="jdbc.jsp" %>
 <%
 if(username != null && username.length()>0){
-    try(Connection con = DriverManager.getConnection(url, uid, pw);){
-        String SQL = "SELECT product.productId, product.productName FROM ((Customer JOIN OrderSummary ON Customer.customerId = OrderSummary.customerId) JOIN OrderProduct ON OrderSummary.OrderId = OrderProduct.OrderId) JOIN product ON OrderProduct.productId = product.productId WHERE customer.userid = ?";
+    try{
+        getConnection();
+	    Statement stmt = con.createStatement(); 			
+	    stmt.execute("USE orders");
+        String SQL = "SELECT product.productId, product.productName FROM ((customer JOIN orderSummary ON customer.customerId = ordersummary.customerId) JOIN orderproduct ON ordersummary.OrderId = orderproduct.OrderId) JOIN product ON orderproduct.productId = product.productId WHERE customer.userid = ?";
         PreparedStatement pst = con.prepareStatement(SQL); 
         pst.setString(1, username);
         ResultSet rst = pst.executeQuery();

@@ -1,4 +1,9 @@
 <%@ page trimDirectiveWhitespaces="true" import="java.sql.*,java.io.*" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.text.NumberFormat" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF8"%>
+<%@ include file="jdbc.jsp" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,9 +22,10 @@ String pw = "YourStrong@Passw0rd";
 //DEBUGGING
 //out.println("<br> You're ID: " + customerId + "<br> Your comment"+"<br> The product id: " + productId + "<br> Your rating: " + rating);
 
-try(
-Connection con = DriverManager.getConnection(url, uid, pw); ){
-    
+try{
+    getConnection();
+	Statement stmt = con.createStatement(); 			
+	stmt.execute("USE orders");
 
     String SQL2 = "SELECT * FROM REVIEW WHERE customerId = ? AND productId = ?";
     PreparedStatement pst2 = con.prepareStatement(SQL2);

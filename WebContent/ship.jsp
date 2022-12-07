@@ -9,145 +9,120 @@
 
 <html>
 <head>
-<title>Hydrobottle Grocery Shipment Processing</title>
+<title>Ray's Grocery Shipment Processing</title>
 </head>
 <body>
         
+<%@ include file="header.jsp" %>
 
 <%
-	//Connection information
-	String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
-	String uid = "SA";
-	String pw = "YourStrong@Passw0rd";
-
-	// Get order id
-	String id = request.getParameter("id");
-
-	//DEBUGGING
-	//out.println("Id recieved: " + id);
+// Get order id
+String ordId = request.getParameter("orderId");
           
-	// Check if valid order id
-	boolean valid = false;
-	String SQL = "SELECT orderId FROM ordersummary";
-	try(Connection con = DriverManager.getConnection(url, uid, pw);Statement stmt = con.createStatement();){
-		ResultSet rst = stmt.executeQuery(SQL);
-		while(rst.next()){
-			if(id.equals(rst.getString("orderId"))){
-				valid = true;
-			}
-			
+try 
+{	
+	if (ordId == null || ordId.equals(""))
+		out.println("<h1>Invalid order id.</h1>");	
+	else
+	{					
+		// Get database connection
+        getConnection();
+	            
+     	// Check if valid order id
+        String sql = "SELECT orderId, productId, quantity, price FROM orderproduct WHERE orderId = ?";	
+				      
+   		con = DriverManager.getConnection(url, uid, pw);
+   		PreparedStatement pstmt = con.prepareStatement(sql);
+   		pstmt.setInt(1, Integer.parseInt(ordId));
+   		ResultSet rst = pstmt.executeQuery();
+   		int orderId=0;
+   		String custName = "";
+
+   		if (!rst.next())
+   		{
+   			out.println("<h1>Invalid order id or no items in order.</h1>");
+   		}
+   		else
+   		{	
+   			try
+   			{
+   				// Turn off auto-commit
+   				con.setAutoCommit(false);
+
+	   			// Enter shipment information into database
+   	   			sql = "INSERT INTO shipment (shipmentDate, warehouseId) VALUES (?, 1);";   	   	
+   	   			pstmt = con.prepareStatement(sql);   	   			
+   	   			pstmt.setTimestamp(1, new java.sql.Timestamp(new Date().getTime()));
+   	   			pstmt.executeUpdate();
+   	   			
+   				// Verify that each item has sufficient inventory to be shipped
+   				// Update inventory
+   				String sqlq = "SELECT quantity FROM productinventory WHERE warehouseId = 1 and productId = ?";
+   				PreparedStatement pstmtq = con.prepareStatement(sqlq);  
+   				boolean success = true;
+   				
+   				sql = "UPDATE productinventory SET quantity = ? WHERE warehouseId = 1 and productId = ?";
+   				pstmt = con.prepareStatement(sql);   
+   				
+	   			do
+	   			{
+	   				int prodId = rst.getInt(2);
+	   				int qty = rst.getInt(3);
+	   				pstmtq.setInt(1, prodId);
+	   				ResultSet resq = pstmtq.executeQuery();
+	   				if (!resq.next() || resq.getInt(1) < qty)
+	   				{
+	   					// No inventory record.
+	   					out.println("<h1>Shipment not done. Insufficient inventory for product id: "+prodId+"</h1>");
+	   					success = false;	   					
+	   					break;
+	   				}
+	   				
+	   				// Update inventory record
+	   				int inventory = resq.getInt(1);
+	   				pstmt.setInt(1, inventory - qty);
+	   				pstmt.setInt(2, prodId);
+	   				pstmt.executeUpdate();
+	   				
+	   				out.println("<h2>Ordered product: "+prodId+" Qty: "+qty+" Previous inventory: "+inventory+" New inventory: "+(inventory-qty)+"</h2><br>");
+	   			} while (rst.next());
+   				
+	   			
+   				// Commit or rollback
+   				if (!success)
+   					con.rollback();
+   				else
+   				{
+   					out.println("<h1>Shipment successfully processed.</h1>");
+   					con.commit();   				
+   				}
+   			}
+   			catch (SQLException e)
+   			{	con.rollback();  
+   				out.println(e);
+   			}
+   			finally
+   			{
+	   			// Turn on auto-commit
+	   			con.setAutoCommit(true);
+   			}
 		}
-	}catch (SQLException ex) {
-		out.println(ex);
-	}
-
-	if(valid){
-		out.println("Order id validated<br>");
-	}else{
-		//TODO everything will still run even if the orderId is invalid
-		out.println("Error: order id invalid<br>");
-	}
-
-	java.util.Date shipmentDate = new java.util.Date();
-	if(valid){
-	//Get order date
-	try(Connection con = DriverManager.getConnection(url, uid, pw);Statement stmt = con.createStatement();){
-		String gettingDate = "SELECT orderDate FROM orderSummary WHERE orderId=?";
-		PreparedStatement pstGetDate = con.prepareStatement(gettingDate);
-		pstGetDate.setString(1,id);
-		ResultSet rstGetDate = pstGetDate.executeQuery();
-		rstGetDate.next();
-		shipmentDate = rstGetDate.getDate("orderDate");
-
-	}catch (SQLException ex) {
-		out.println(ex);
-	}
+   	}
 }
-	
-	try(Connection con = DriverManager.getConnection(url, uid, pw);Statement stmt = con.createStatement();){
-		
-		// Start a transaction (turn-off auto-commit)
-		con.setAutoCommit(false);
-	
-	
-		// Retrieve all items in order with given id
-		String SQL2 = "SELECT * FROM orderproduct OP JOIN ordersummary OS ON OP.orderId=OS.orderId  WHERE OS.orderId = ?";
-		PreparedStatement pst = con.prepareStatement(SQL2); 
-		pst.setString(1,id);
-		ResultSet rst2 = pst.executeQuery();
-
-		// Create a new shipment record (For now only for warehouse 1) using a dummy date for now
-		//int rowcount = stmt.executeUpdate("INSERT INTO shipment(warehouseId,shipmentDate,orderId) VALUES (1,'2019-9-5 3:30:22',?)");
-		String SQLship = "INSERT INTO shipment(warehouseId,shipmentDate,orderId) VALUES (1,?,?)";
-		PreparedStatement pstShip = con.prepareStatement(SQLship);
-		pstShip.setDate(1,new java.sql.Date(shipmentDate.getTime()));
-		pstShip.setString(2,id);
-		pstShip.executeUpdate(); 
-		
-
-		//DEBUGGING
-		//out.println("<br>Did new shipment record creation work: " + rowcount);
-	
-
-		// For each item verify sufficient quantity available in warehouse 1
-		boolean enough = false;
-		while(rst2.next()){
-			out.println("<br>Checking product: " + rst2.getString("productId")+" for amount: "+rst2.getString("quantity"));
-			int idToCheck = rst2.getInt("productId");
-			int quanToCheck= rst2.getInt("quantity");
-			String SQL3 = "SELECT * FROM productinventory WHERE warehouseId = 1 AND productID = ?";
-			PreparedStatement pstPI = con.prepareStatement(SQL3);
-			pstPI.setInt(1,idToCheck);
-			ResultSet rst3 = pstPI.executeQuery();
-			
-			// If any item does not have sufficient inventory, cancel transaction and rollback. Otherwise, update inventory for each item.
-			if(rst3.next()){
-				int curAmount = rst3.getInt("quantity");
-				if(curAmount >= quanToCheck){
-					enough = true;
-					String update = "UPDATE productinventory SET quantity = ?";
-					PreparedStatement pstUpPI = con.prepareStatement(update);
-					pstUpPI.setInt(1,(curAmount-quanToCheck));
-					pstUpPI.executeUpdate();
-					out.println("<h2>Ordered Product: "+idToCheck+"Qty: "+ quanToCheck +"Previous inventory: "+curAmount+ "New Inventory: "+(curAmount-quanToCheck)+"</h2>");
-					
-				}else{
-					enough=false;
-					out.println("<h1>Shipment Failed</h1>");
-					out.println("<br><h2>There was not enough inventory for product id"+idToCheck+"</h2>");
-					break;
-				}
-			}else{
-				enough=false;
-					out.println("<h1>Shipment Failed</h1>");
-					out.println("<br><h2>There was not enough inventory for product id"+idToCheck+"</h2>");
-					break;
-			}
-		
-		}
-
-			if(enough==true){
-				out.println("<h1>Shipment sucessful, changes have been commited</h1>");
-				con.commit();
-			}else{
-				out.println("<h1>Shipment failed, changes have been rolled back</h1>");
-				con.rollback();
-			}
-
-
-
-		con.setAutoCommit(true);
-	}catch (SQLException ex) {
-		out.println(ex);
+catch (SQLException ex)
+{ 	out.println(ex);
+}
+finally
+{
+	try
+	{
+		if (con != null)
+			con.close();
 	}
-	
-	
-
-	
-	
-	
-
-	
+	catch (SQLException ex)
+	{       out.println(ex);
+	}
+}  
 %>                       				
 
 <h2><a href="shop.html">Back to Main Page</a></h2>

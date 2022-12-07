@@ -1,172 +1,149 @@
-<%@ page import="java.sql.*,java.net.URLEncoder" %>
+<%@ page import="java.util.HashMap" %>
 <%@ page import="java.text.NumberFormat" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF8"%>
-<!DOCTYPE html>
+<%@ include file="jdbc.jsp" %>
+
 <html>
 <head>
-<title>Hydrobottle</title>
+<title>Ray's Grocery</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-<h1><p1 style ="font-family:Courier New">Search for the products you want to buy:</h1></p1>
+<%@ include file="header.jsp" %>
+
+<h2>Browse Products By Category and Search by Product Name:</h2>
 
 <form method="get" action="listprod.jsp">
-<input type="text" name="productName" size="50" placeholder="Leave blank for all products">
-<input type="submit" value="Submit"><input type="reset" value="Reset"> 
-<select name="Category">
-	<option>Any Category</option>
-	<option>Beverages</option>
-	<option>Condiments</option>
-	<option>Dairy Products</option>
-	<option>Produce</option>
-	<option>Meat/Poultry</option>
-	<option>Seafood</option>
-	<option>Confections</option>
-	<option>Grains/Cereals</option>
-</select>
-</form>
+  <p align="left">
+  <select size="1" name="categoryName">
+  <option>All</option>
 
-
-<%  
-// Get product name to search for
-String prodName = request.getParameter("productName");
-String catName = request.getParameter("Category");
-boolean hasCat = false;
-if(catName != null){
- hasCat = !catName.equals("Any Category");
+<%
+/*
+// Could create category list dynamically - more adaptable, but a little more costly
+try               
+{
+	getConnection();
+ 	ResultSet rst = executeQuery("SELECT DISTINCT categoryName FROM Product");
+        while (rst.next()) 
+		out.println("<option>"+rst.getString(1)+"</option>");
 }
-
-// Check that varaible is not null
-	boolean hasProdName = prodName != null && !prodName.equals("");
-
- String h2 = (hasProdName)? "Products containing " + prodName : "All Products";
- 
+catch (SQLException ex)
+{       out.println(ex);
+}
+*/
 %>
 
-<h2><p2 style ="font-family:Courier New"> <% if(hasCat==false){out.println(h2);}else{out.println(h2+ " in " + catName);}  %></h2></p2>
+  <option>Sports</option>
+  <option>Life Style</option>
+  <option>Coffee</option>
+  <option>Cups</option>
+  <option>Accessories</option>
+  <option>Food Jars</option>
+  <option>Bags</option>
+  <option>Beer,Wine</option>       
+  </select>
+  <input type="text" name="productName" size="50">
+  <input type="submit" value="Submit"><input type="reset" value="Reset"></p>
+</form>
 
-<% 
+<%
+// Colors for different item categories
+HashMap<String,String> colors = new HashMap<String,String>();		// This may be done dynamically as well, a little tricky...
+colors.put("Sports", "#0000FF");
+colors.put("Life Style", "#FF0000");
+colors.put("Coffee", "#000000");
+colors.put("Cups", "#6600CC");
+colors.put("Accessories", "#55A5B3");
+colors.put("Food Jars", "#FF9900");
+colors.put("Bags", "#00CC00");
+colors.put("Beer,Wine", "#FF66CC");
+%>
 
-// Set currency format
+<%
+// Get product name to search for
+String name = request.getParameter("productName");
+String category = request.getParameter("categoryName");
+
+boolean hasNameParam = name != null && !name.equals("");
+boolean hasCategoryParam = category != null && !category.equals("") && !category.equals("All");
+String filter = "", sql = "";
+
+if (hasNameParam && hasCategoryParam)
+{
+	filter = "<h3>Products containing '"+name+"' in category: '"+category+"'</h3>";
+	name = '%'+name+'%';
+	sql = "SELECT productId, productName, productPrice, categoryName FROM Product P JOIN Category C ON P.categoryId = C.categoryId WHERE productName LIKE ? AND categoryName = ?";
+}
+else if (hasNameParam)
+{
+	filter = "<h3>Products containing '"+name+"'</h3>";
+	name = '%'+name+'%';
+	sql = "SELECT productId, productName, productPrice, categoryName FROM Product P JOIN Category C ON P.categoryId = C.categoryId WHERE productName LIKE ?";
+}
+else if (hasCategoryParam)
+{
+	filter = "<h3>Products in category: '"+category+"'</h3>";
+	sql = "SELECT productId, productName, productPrice, categoryName FROM Product P JOIN Category C ON P.categoryId = C.categoryId WHERE categoryName = ?";
+}
+else
+{
+	filter = "<h3>All Products</h3>";
+	sql = "SELECT productId, productName, productPrice, categoryName FROM Product P JOIN Category C ON P.categoryId = C.categoryId";
+}
+
+out.println(filter);
+
 NumberFormat currFormat = NumberFormat.getCurrencyInstance();
 
+try 
+{
+	getConnection();
+	Statement stmt = con.createStatement(); 			
+	stmt.execute("USE orders");
+	
+	PreparedStatement pstmt = con.prepareStatement(sql);
+	if (hasNameParam)
+	{
+		pstmt.setString(1, name);	
+		if (hasCategoryParam)
+		{
+			pstmt.setString(2, category);
+		}
+	}
+	else if (hasCategoryParam)
+	{
+		pstmt.setString(1, category);
+	}
+	
+	ResultSet rst = pstmt.executeQuery();
+	
+	out.print("<font face=\"Century Gothic\" size=\"2\"><table class=\"table\" border=\"1\"><tr><th class=\"col-md-1\"></th><th>Product Name</th>");
+	out.println("<th>Category</th><th>Price</th></tr>");
+	while (rst.next()) 
+	{
+		int id = rst.getInt(1);
+		out.print("<td class=\"col-md-1\"><a href=\"addcart.jsp?id=" + id + "&name=" + rst.getString(2)
+				+ "&price=" + rst.getDouble(3) + "\">Add to Cart</a></td>");
 
-//Note: Forces loading of SQL Server driver
-try{	// Load driver class
-	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		String itemCategory = rst.getString(4);
+		String color = (String) colors.get(itemCategory);
+		if (color == null)
+			color = "#FFFFFF";
+
+		out.println("<td><a href=\"product.jsp?id="+id+"\"<font color=\"" + color + "\">" + rst.getString(2) + "</font></td>"
+				+ "<td><font color=\"" + color + "\">" + itemCategory + "</font></td>"
+				+ "<td><font color=\"" + color + "\">" + currFormat.format(rst.getDouble(3))
+				+ "</font></td></tr>");
+	}
+	out.println("</table></font>");
+	closeConnection();
+} catch (SQLException ex) {
+	out.println(ex);
 }
-catch (java.lang.ClassNotFoundException e){
-	out.println("ClassNotFoundException: " +e);
-}
-
-String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
-String uid = "SA";
-String pw = "YourStrong@Passw0rd";
-
-
- if(!hasProdName && !hasCat){
-	 try( Connection con = DriverManager.getConnection(url, uid, pw); Statement stmt = con.createStatement(); ){
-	String str = "SELECT productId,productName,productPrice FROM product";
-	ResultSet rst = stmt.executeQuery(str);
-	out.println("<style>table,th,td { border: 1px solid black;}</style>");
-	out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
-
-		while(rst.next()){
-			out.println("<tr>"+"<td><a href=" + "\"" + "addcart.jsp?id="+ rst.getString("productId") + "&name=" + rst.getString("productName") + "&price="+rst.getString("productPrice") + "\"" + ">Add to Cart</a></td>" + "<td>" + "<a href=\"productInfo.jsp?id=" + rst.getString("productId") +"\">" + rst.getString("productName") + "</a>" + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
-		}
-	}catch (SQLException ex) { out.println(ex); }
-	   out.println("</table>");
-} else if(hasProdName && !hasCat){
-	try(Connection con = DriverManager.getConnection(url, uid, pw);){
-		// Create query
-		String SQL = "SELECT productId,productName,productPrice FROM product WHERE productName LIKE ?";
-
-		PreparedStatement pst=null;
-		ResultSet rst = null;
-
-		// Format LIKE
-		prodName = "%"+prodName+"%";
-	
-		// Create prepareStatement and insert formatted varaible
-		pst = con.prepareStatement(SQL); 
-		pst.setString(1, prodName);
-
-		// Execute the query
-		rst = pst.executeQuery();
-
-	
-		out.println("<style>table,th,td { border: 1px solid black;}</style>");
-		out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
-
-		// Traverse results
-		while(rst.next()){
-		
-		out.println("<tr>"+"<td><a href=" + "\"" + "addcart.jsp?id="+ rst.getString("productId") + "&name=" + rst.getString("productName") + "&price="+rst.getString("productPrice") + "\"" + ">Add to Cart</a></td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
-		}
-	}catch (SQLException ex) { out.println(ex); }
-	}else if(hasProdName && hasCat){
-	try(Connection con = DriverManager.getConnection(url, uid, pw);){
-		// Create query
-		String SQL = "SELECT productId,productName,productPrice FROM product JOIN category ON category.categoryId = product.categoryId WHERE productName LIKE ? AND categoryName = ?";
-
-		PreparedStatement pst=null;
-		ResultSet rst = null;
-
-		// If varaible is not null run the query
-		
-			// Format LIKE
-			prodName = "%"+prodName+"%";
-	
-		// Create prepareStatement and insert formatted varaible
-		pst = con.prepareStatement(SQL); 
-		pst.setString(1, prodName);
-		pst.setString(2,catName);
-
-		// Execute the query
-		rst = pst.executeQuery();
-
-	
-		out.println("<style>table,th,td { border: 1px solid black;}</style>");
-		out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
-
-		// Traverse results
-		while(rst.next()){
-		
-		out.println("<tr>"+"<td><a href=" + "\"" + "addcart.jsp?id="+ rst.getString("productId") + "&name=" + rst.getString("productName") + "&price="+rst.getString("productPrice") + "\"" + ">Add to Cart</a></td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
-		}
-   
-} catch (SQLException ex) { out.println(ex); }
-}else{
-	//no product name and a category
-	try(Connection con = DriverManager.getConnection(url, uid, pw);){
-		// Create query
-		String SQL = "SELECT productId,productName,productPrice FROM product JOIN category ON category.categoryId = product.categoryId WHERE categoryName = ?";
-
-		PreparedStatement pst=null;
-		ResultSet rst = null;
-	
-		// Create prepareStatement and insert formatted varaible
-		pst = con.prepareStatement(SQL); 
-		pst.setString(1,catName);
-
-		// Execute the query
-		rst = pst.executeQuery();
-
-	
-		out.println("<style>table,th,td { border: 1px solid black;}</style>");
-		out.println("<table><tr><th></th><th>Product Name</th><th>Product Price</th>");
-
-		// Traverse results
-		while(rst.next()){
-		
-		out.println("<tr>"+"<td><a href=" + "\"" + "addcart.jsp?id="+ rst.getString("productId") + "&name=" + rst.getString("productName") + "&price="+rst.getString("productPrice") + "\"" + ">Add to Cart</a></td>" + "<td>" + rst.getString("productName") + "</td>" + "<td> $" + rst.getBigDecimal("productPrice") + "</td>"+"</tr>");
-		}
-   
-} catch (SQLException ex) { out.println(ex); }
-}
-
-
 %>
 
 </body>
 </html>
+

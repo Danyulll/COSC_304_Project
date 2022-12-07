@@ -5,6 +5,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Map" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF8"%>
+<%@ include file="jdbc.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,13 +26,13 @@
 	@SuppressWarnings({"unchecked"})
 	HashMap<String, ArrayList<Object>> productList = (HashMap<String, ArrayList<Object>>) session.getAttribute("productList");
 	
-	// Server connection information
-	String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
-	String uid = "SA";
-	String pw = "YourStrong@Passw0rd";
+
 
 	// Make connection
-	try(Connection con = DriverManager.getConnection(url, uid, pw); Statement stmt = con.createStatement();){
+	try{
+		getConnection();
+		Statement stmt = con.createStatement(); 			
+		stmt.execute("USE orders");
 		
 		// Determine if valid customer id was entered
 		boolean validId = false;

@@ -1,21 +1,18 @@
 <!--
-A JSP file that encapsulates all database access.
+A JSP file that encapsulates database connections.
 
 Public methods:
 - public void getConnection() throws SQLException
-- public ResultSet executeQuery(String query) throws SQLException
-- public void executeUpdate(String query) throws SQLException
 - public void closeConnection() throws SQLException  
-
 -->
 
 <%@ page import="java.sql.*"%>
 
 <%!
 	// User id, password, and server information
-	private String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
-	private String uid = "SA";
-	private String pw = "YourStrong@Passw0rd";
+	private String url = "jdbc:sqlserver://cosc304_sqlserver:1433;TrustServerCertificate=True";
+	private String uid = "sa";
+	private String pw = "304#sa#pw";
 
 	// Connection
 	private Connection con = null;
@@ -34,12 +31,17 @@ Public methods:
 		}
 	
 		con = DriverManager.getConnection(url, uid, pw);
+		Statement stmt = con.createStatement();
 	}
    
-	public void closeConnection() throws SQLException 
+	public void closeConnection()
 	{
-		if (con != null)
-			con.close();
-		con = null;
+		try {
+			if (con != null)
+				con.close();
+			con = null;
+		}
+		catch (Exception e)
+		{ }
 	}
 %>

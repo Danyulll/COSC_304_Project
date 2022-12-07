@@ -22,19 +22,10 @@ String sql = "SELECT productImage FROM Product P  WHERE productId = ?";
 
 try 
 {
-	//getConnection();
-	//Statement st = con.createStatement(); 			
-	//st.execute("USE orders");
-	//st.close();
-
-    String url = "jdbc:sqlserver://db:1433;DatabaseName=tempdb;";
-    String uid = "SA";
-    String pw = "YourStrong@Passw0rd";
-
-    Connection con = DriverManager.getConnection(url, uid, pw);
-    
-    //DEBUGGING
-    out.println("Sucessful connection? " + con);
+	getConnection();
+	Statement st = con.createStatement(); 			
+	st.execute("USE orders");
+	st.close();
 
 	PreparedStatement stmt = con.prepareStatement(sql);
 	stmt.setInt(1,idVal);
@@ -50,9 +41,8 @@ try
 		OutputStream ostream = response.getOutputStream();
 
 		int count;
-		while ( (count = istream.read(data, 0, BUFFER_SIZE)) != -1){
+		while ( (count = istream.read(data, 0, BUFFER_SIZE)) != -1)
 			ostream.write(data, 0, count);
-        }
 
 		ostream.flush();
 		istream.close();					
