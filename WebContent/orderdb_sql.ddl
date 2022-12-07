@@ -31,7 +31,7 @@ CREATE TABLE paymentmethod (
     paymentMethodId     INT IDENTITY,
     paymentType         VARCHAR(20),
     paymentNumber       VARCHAR(30),
-    paymentExpiryDate   DATE,
+    paymentExpiryDate   DATETIME,
     customerId          INT,
     PRIMARY KEY (paymentMethodId),
     FOREIGN KEY (customerId) REFERENCES customer(customerid)
@@ -155,21 +155,21 @@ INSERT INTO category(categoryName) VALUES ('Beer,Wine');
 
 
 
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Everyday Flask', 1, '500ml insulated flask, good for all your daily needs',50.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Kids Flask',1,'300ml insulated flask perfect for your childs first day at school',30.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Insulated Flask',2,'1L bottle to keep any drink warm, or cold!',80.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sports Water Bottle',2,'500mL water bottle to accompany you in the wils',25.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sports Water Bottle XL',2,'The 1L version of our popular Sports Water Bottle',40.99);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Coffee Mug',2,'200mL mug perfect for you morning coffee',25.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Coffee Mug XL',4,'The 1L version of our popular Coffee Mug',35.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Hydro Cup',2,'A cup, usefull for multiple purposes',5.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Everday Flask Mouth Replacement',5,'Replacement parts for your flask',20.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Replacement Straw',6,'Replacement straw, compatible with all our flasks',10.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Food Jar 1',3,'Able to fit 500g of food',21.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Food Jar 2',3,'Able to fit 700g of food',38.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Food Jar 3',4,'Able to fit 1kg of Food',23.25);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Hydroflask Bag',2,'Own you very own Hydroflask branded bag!',100.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Alcohol Flask',7,'Keeps all types of alcohol fresh',50.99);
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Everyday Flask', 1, '500ml insulated flask, good for all your daily needs',50.00,'./img/everydayflask.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Kids Flask',1,'300ml insulated flask perfect for your childs first day at school',30.00,'./img/Kidsflask.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Insulated Flask',2,'1L bottle to keep any drink warm, or cold!',80.00,'./img/Insulatedflask.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Sports Water Bottle',2,'500mL water bottle to accompany you in the wils',25.00,'./img/sportswaterbottle.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Sports Water Bottle XL',2,'The 1L version of our popular Sports Water Bottle',40.99, './img/plzwork.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Coffee Mug',2,'200mL mug perfect for you morning coffee',25.00, './img/CoffeeMug.png');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Coffee Mug XL',4,'The 1L version of our popular Coffee Mug',35.00,'./img/CoffeeMugXL.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Hydro Cup',2,'A cup, usefull for multiple purposes',5.00, './img/Hydrocup.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Everday Flask Mouth Replacement',5,'Replacement parts for your flask',20.00, './img/EverdayFlaskMouthReplacement.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Replacement Straw',6,'Replacement straw, compatible with all our flasks',10.00, './img/ReplacementStraw.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Food Jar 1',3,'Able to fit 500g of food',21.00, './img/Foodjar1.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Food Jar 2',3,'Able to fit 700g of food',38.00, './img/Foodjar2.png');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Food Jar 3',4,'Able to fit 1kg of Food',23.25, './img/Foodjar3.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Hydroflask Bag',2,'Own you very own Hydroflask branded bag!',100.00,'./img/Hydroflaskbag.jpg');
+INSERT product(productName, categoryId, productDesc, productPrice, productImageURL) VALUES ('Alcohol Flask',7,'Keeps all types of alcohol fresh',50.99,'./img/Alcoholflask.jpg');
 
     
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Arnold', 'Anderson', 'a.anderson@gmail.com', '204-111-2222', '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada', 'arnold' , 'test');
@@ -215,14 +215,16 @@ SELECT @orderId = @@IDENTITY
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 21.35)
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 19, 2, 81)
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 20, 3, 10);
-/*
-INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (1, 'Visa', '1234567890123456', '06/25', 1)
-INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (2, 'Mastercard', '5299640000000000', '07/26', 2)
-INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (1, 'Visa', '0000000000000000', '03/23', 3)
-INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (3, 'Amex', '370601052937734', '04/28', 4)
-INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (2, 'Mastercard', '5516697954443486', '08/23', 5)
-INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (3, 'Amex', '378350952578402', '10/24', 6)
-INSERT INTO paymentmethod (paymentMethodId, paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES (1, 'Visa', '4916801926971355', '01/28', 7)
+
+
+INSERT INTO paymentmethod (paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES ('Visa', '1234567890123456', '2025-06-01 00:00:00', 1)
+INSERT INTO paymentmethod (paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES ('Mastercard', '5299640000000000', '2026-07-01 00:00:00', 2)
+INSERT INTO paymentmethod (paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES ('Visa', '0000000000000000', '2023-02-01 00:00:00', 3)
+INSERT INTO paymentmethod (paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES ('Amex', '370601052937734', '2028-04-01 00:00:00', 4)
+INSERT INTO paymentmethod (paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES ('Mastercard', '5516697954443486', '2023-01-01 00:00:00', 5)
+INSERT INTO paymentmethod (paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES ('Amex', '378350952578402', '2024-10-01 00:00:00', 6)
+INSERT INTO paymentmethod (paymentType, paymentNumber, paymentExpiryDate, customerId) VALUES ('Visa', '4916801926971355', '2028-01-01 00:00:00', 7)
+
 
 INSERT INTO warehouse (warehouseId, warehouseName) VALUES (1, 'Bottler.INC')
 INSERT INTO warehouse (warehouseId, warehouseName) VALUES (2, 'Water.Co')
@@ -248,7 +250,7 @@ INSERT INTO productinventory (productId, warehouseId, quantity, price) VALUES (7
 
 INSERT INTO review (reviewId, reviewRating, reviewDate, customerId, productId, reviewComment) VALUES (1, 5, '2021-11-01 09:30:24', 1, 3, 'I love this product a lot, worth the money')
 INSERT INTO review (reviewId, reviewRating, reviewDate, customerId, productId, reviewComment) VALUES (2, 4, '2021-12-23 08:30:43', 2, 5, 'Will definitly buy again')
-INSERT INTO review (reviewId, reviewRating, reviewDate, customerId, productId, reviewComment) VALUES (3, 5 '2021-12-30 06:45:59', 4, 1, 'Works as advertised' )
+/* INSERT INTO review (reviewId, reviewRating, reviewDate, customerId, productId, reviewComment) VALUES (3, 5 '2021-12-23 08:30:43', 4, 1, 'Works as advertised') */
 
-*/ 
+
 

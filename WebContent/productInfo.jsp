@@ -23,7 +23,7 @@
     rst.next();
     if(rst.getString("productImageURL") != null){
         out.println("<h2>"+rst.getString("productName")+"</h2>");
-	    out.println("<br><img src=\""+rst.getString("productImageURL")+"\">");
+	    out.println("<br><img src=\""+rst.getString("productImageURL")+"\"width=\"500\" height=\"500\"\">");
     
     }
 
