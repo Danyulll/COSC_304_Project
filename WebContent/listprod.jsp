@@ -6,7 +6,7 @@
 <html>
 <head>
 
-<title>Hydrobottle</title>
+<title style="font-family:'Courier New', Courier, monospace;">Hydrobottle</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
