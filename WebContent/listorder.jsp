@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Ray's Grocery Order List</title>
+<title>Hydrobottle - Order List</title>
 </head>
 <body>
 
